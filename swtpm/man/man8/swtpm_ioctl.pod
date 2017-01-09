@@ -1,0 +1,121 @@
+=head1 NAME
+
+swtpm_ioctl
+
+=head1 SYNOPSIS
+
+B<swtpm_ioctl [COMMAND] E<lt>deviceE<gt>>
+
+=head1 DESCRIPTION
+
+B<swtpm_ioctl> implements a client tool for controlling the
+I<swtpm_cuse> TPM software emulator, such as for example its
+initialization and shutdown. Once the swtpm_cuse has been
+initialized, TPM commands can be sent to it.
+
+The full path to the swtpm_cuse's character device must be provided such 
+as for example /dev/vtpm-200.
+
+The environment variable SWTPM_IOCTL_BUFFERSIZE can be set to the size
+for the buffer for state blob transfer to use. If it is not set, the ioctl()
+interface is used for transferring the state. This environment variable
+is primarily used for testing purposes.
+
+The following commands are supported:
+
+=over 4
+
+=item B<--tpm-device E<lt>deviceE<gt>>
+
+Use the given device.
+
+This option can be used instead of providing the device as the last parameter.
+
+=item B<--tcp E<lt>serverE<gt>:E<lt>portE<gt>>
+
+Connect to the given server and port; if no server is given, 127.0.0.1 is used;
+if port is not given, the default port 6545 is used.
+
+=item B<--unixio E<lt>pathE<gt>>
+
+Connect to the given UnixIO path.
+
+=item B<-c>
+
+Get the swtpm_cuse's capability flags indicating which commands
+are supported.
+
+=item B<-i>
+
+Send a hardware initialization signal to the swtpm_cuse. Volatile
+state previously written by the TPM will be read and the file automatically
+delete.
+
+=item B<-s>
+
+Gracefully shut the swtpm_cuse down.
+
+=item B<--stop>
+
+Stop the swtpm_cuse. This does not shut it down. The I<-i> command can again
+be sent to it. After a stop it is also possible to load TPM stateblobs into the
+TPM using the I<--load> command.
+
+=item B<-e>
+
+Get the tpmEstablished bit.
+
+=item B<-r locality>
+
+Reset the tpmEstablished bit using the given locality. Only localities 3 and 4 work.
+This operation will not permanently change the localty that was previously set
+using the I<-l> option.
+
+=item B<-l locality>
+
+Set the locality for the subsequent TPM commands.
+
+=item B<-v>
+
+Have the TPM write the volatile state to a file. Upon a TPM_Init (-i) the
+TPM state will be read and the TPM can then resume operation without further
+intialization.
+
+=item B<-C>
+
+Cancel an ongoing TPM command.
+
+=item B<-h data>
+
+Reset and extend PCR 17 with the hash of the given data. If data is the single
+character '-', then all data are read from stdin.
+
+=item B<--save E<lt>TPM state blob nameE<gt> E<lt>filenameE<gt> >
+
+Save the TPM state blob into the given file. Valid TPM state blob
+names are permanent, volatile, and savestate.
+
+Note that this command can be executed at any time. However, to retrieve
+the latest volatile state, the I<-v> command should have been run
+immediately before running this command. The savestate blob will only be
+returned if a TPM_SaveState command was executed in the TPM.
+
+=item B<--load E<lt>TPM state blob nameE<gt> E<lt>filenameE<gt>>
+
+Load the given TPM state blob from the given file. Valid TPM state blob
+names are permanent, volatile, and savestate.
+
+Note that this command can only be executed on a TPM that is shut down.
+To then start the TPM with the uploaded state, the I<-i> command must
+be issued.
+
+=item B<-g>
+
+Get configuration flags that for example indicate which keys (file encryption
+or migration key) are in use by the TPM.
+
+=back
+
+=head1 SEE ALSO
+
+B<swtpm_cuse>

@@ -1,0 +1,694 @@
+#!/bin/bash
+
+# For the license, see the LICENSE file in the root directory.
+
+DIR=$(dirname "$0")
+ROOT=${DIR}/..
+SWTPM=swtpm
+SWTPM_EXE=$ROOT/src/swtpm/$SWTPM
+TPMDIR=`mktemp -d`
+PID_FILE=$TPMDIR/${SWTPM}.pid
+SOCK_PATH=$TPMDIR/sock
+CMD_PATH=$TPMDIR/cmd
+RESP_PATH=$TPMDIR/resp
+
+source ${DIR}/test_common
+
+trap "cleanup" SIGTERM EXIT
+
+function cleanup()
+{
+	rm -rf $TPMDIR
+	if [ -n "$PID" ]; then
+		kill -SIGTERM $PID 2>/dev/null
+	fi
+}
+
+# Test 1: test the control channel on the chardev tpm
+
+# use a pseudo terminal
+exec 100<>/dev/ptmx
+$SWTPM_EXE chardev --fd 100 --tpmstate dir=$TPMDIR --pid file=$PID_FILE --ctrl type=unixio,path=$SOCK_PATH &
+
+if wait_for_file $PID_FILE 3; then
+	echo "Error: Chardev TPM did not write pidfile."
+	exit 1
+fi
+
+PID="$(cat $PID_FILE)"
+
+
+# Get the capability bits: CMD_GET_CAPABILITY = 0x00 00 00 01
+echo -en '\x00\x00\x00\x01' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CLIENT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00 00 00 07 ff"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Unexpected response from CMD_GET_CAPABILITY:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# Send TPM_Init to the TPM: CMD_INIT = 0x00 00 00 02 + flags
+echo -en '\x00\x00\x00\x02\x00\x00\x00\x00' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Unexpected response from CMD_INIT:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# Send unknown command to the TPM
+echo -en '\x00\x00\xff\xff' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 0a"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Unexpected response from sending unsupported command:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# Save the volatile state: CMD_STORE_VOLATILE = 0x00 00 00 0a
+/bin/echo -en '\x00\x00\x00\x0a' >$CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CLIENT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Unexpected response from CMD_STORE_VOLATILE:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+if [ ! -r $TPMDIR/tpm-00.volatilestate ]; then
+	echo "Error: Socket TPM: Did not write volatile state file"
+	exit 1
+fi
+
+# Send stop command to the TPM: CMD_STOP = 00 00 00 0e
+echo -en '\x00\x00\x00\x0e' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_STOP:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+
+# Send get config command to the TPM: CMD_GET_CONFIG = 00 00 00 0f
+echo -en '\x00\x00\x00\x0f' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_GET_CONFIG:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+
+# Send shutdown command to the TPM: CMD_SHUTDOWN = 00 00 00 03
+echo -en '\x00\x00\x00\x03' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Unexpected response from CMD_SHUTDOWN:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+sleep 0.2
+kill -0 $PID 2>/dev/null
+if [ $? -eq 0 ]; then
+	echo "Error: TPM should not be running anymore."
+	exit 1
+fi
+
+if [ -f $PID_FILE ]; then
+	echo "Error: TPM should have removed the PID file."
+	exit 1
+fi
+
+echo "OK"
+
+
+# Test 2: test the control channel on the socket tpm
+
+# There are a few more tests here that require sending commands to the TPM
+
+# use a pseudo terminal
+$SWTPM_EXE socket --server port=65530,disconnect=true --tpmstate dir=$TPMDIR --pid file=$PID_FILE --ctrl type=unixio,path=$SOCK_PATH &
+
+if wait_for_file $PID_FILE 3; then
+	echo "Error: Socket TPM did not write pidfile."
+	exit 1
+fi
+
+PID="$(cat $PID_FILE)"
+
+exec 100<>/dev/tcp/localhost/65530
+
+# Get the capability bits: CMD_GET_CAPABILITY = 0x00 00 00 01
+echo -en '\x00\x00\x00\x01' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CLIENT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00 00 00 07 ff"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_GET_CAPABILITY:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# Send TPM_Init to the TPM: CMD_INIT = 0x00 00 00 02 + flags
+echo -en '\x00\x00\x00\x02\x00\x00\x00\x00' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_INIT:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# Send unknown command to the TPM
+echo -en '\x00\x00\xff\xff' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 0a"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from sending unsupported command:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+
+# Startup the TPM
+/bin/echo -en '\x00\xC1\x00\x00\x00\x0C\x00\x00\x00\x99\x00\x01' >&100
+RES=$(cat <&100 | od -t x1 -A n)
+exp=' 00 c4 00 00 00 0a 00 00 00 00'
+if [ "$RES" != "$exp" ]; then
+	echo "Error: Did not get expected result from TPM_Startup(ST_Clear)"
+	echo "expected: $exp"
+	echo "received: $RES"
+	exit 1
+fi
+
+# Save the volatile state: CMD_STORE_VOLATILE = 0x00 00 00 0a
+/bin/echo -en '\x00\x00\x00\x0a' >$CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CLIENT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_STORE_VOLATILE:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+if [ ! -r $TPMDIR/tpm-00.volatilestate ]; then
+	echo "Error: Socket TPM: Did not write volatile state file"
+	exit 1
+fi
+
+# 1. Send command to get TPM established flag: CMD_GET_TPMESTABLISHED = 00 00 00 04
+echo -en '\x00\x00\x00\x04' > $CMD_PATH
+cat $RESP_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from sending CMD_GET_TPMESTABLISHED command:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# 2. Send command to start HASH : CMD_HASH_START = 00 00 00 06
+echo -en '\x00\x00\x00\x06' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from sending CMD_HASH_START command:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# 2.1. Send command to hash data : CMD_HASH_DATA = 00 00 00 07 uint32(length) data
+# We send 0x100 null bytes
+echo -en '\x00\x00\x00\x07\x00\x00\x20\x00' > $CMD_PATH
+dd if=/dev/zero count=$((0x2000)) bs=1 >> $CMD_PATH 2>/dev/null
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from sending CMD_HASH_DATA command:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# 3. Send command to end HASH : CMD_HASH_END = 00 00 00 08
+echo -en '\x00\x00\x00\x08' > $CMD_PATH
+cat $RESP_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from sending CMD_HASH_END command:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# 4. Send command to get TPM established flag: CMD_GET_TPMESTABLISHED = 00 00 00 04
+echo -en '\x00\x00\x00\x04' > $CMD_PATH
+cat $RESP_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00 01 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from sending CMD_GET_TPMESTABLISHED command:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# 5. Send command to reset TPM established flag: CMD_RESET_TPMESTABLISHED = 00 00 00 0b 03
+echo -en '\x00\x00\x00\x0b\x03' > $CMD_PATH
+cat $RESP_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from sending CMD_GET_TPMESTABLISHED command:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# 6. Send command to get TPM established flag: CMD_GET_TPMESTABLISHED = 00 00 00 04
+echo -en '\x00\x00\x00\x04' > $CMD_PATH
+cat $RESP_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from sending CMD_GET_TPMESTABLISHED command:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# Read PCR 17
+exec 100<>/dev/tcp/localhost/65530
+echo -en '\x00\xC1\x00\x00\x00\x0E\x00\x00\x00\x15\x00\x00\x00\x11' >&100
+RES=$(cat <&100 | od -t x1 -A n | tr -d "\n")
+exp=' 00 c4 00 00 00 1e 00 00 00 00 c4 e1 e1 c9 81 c0 cd b1 e0 43 df 97 20 72 f9 5d a9 ff 06 ff'
+if [ "$RES" != "$exp" ]; then
+	echo "Error: (1) Did not get expected result from TPM_PCRRead(17)"
+	echo "expected: $exp"
+	echo "received: $RES"
+	exit 1
+fi
+
+
+# Get the volatile state of the TPM: CMD_GET_STATEBLOB = 00 00 00 0c
+#                    cmd  |     flags     |     type      |    offset     |
+echo -en '\x00\x00\x00\x0c\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+#      result    |   flags   | totlength |   length  |
+exp=" 00 00 00 00 00 00 00 00 00 00 04 d9 00 00 04 d9"
+if [ "${res:0:48}" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_GET_STATEBLOB:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+
+# Send stop command to the TPM: CMD_STOP = 00 00 00 0e
+echo -en '\x00\x00\x00\x0e' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_STOP:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# Read PCR 17 -- should fail now
+exec 100<>/dev/tcp/localhost/65530
+echo -en '\x00\xC1\x00\x00\x00\x0E\x00\x00\x00\x15\x00\x00\x00\x11' >&100
+RES=$(cat <&100 | od -t x1 -A n | tr -d "\n")
+exp=' 00 c4 00 00 00 0a 00 00 00 09'
+if [ "$RES" != "$exp" ]; then
+	echo "Error: (1) Did not get expected result from TPM_PCRRead(17)"
+	echo "expected: $exp"
+	echo "received: $RES"
+	exit 1
+fi
+
+
+# Send get config command to the TPM: CMD_GET_CONFIG = 00 00 00 0f
+echo -en '\x00\x00\x00\x0f' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_GET_CONFIG:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+
+# Send shutdown command to the TPM: CMD_SHUTDOWN = 00 00 00 03
+echo -en '\x00\x00\x00\x03' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_SHUTDOWN:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+sleep 0.2
+kill -0 $PID 2>/dev/null
+if [ $? -eq 0 ]; then
+	echo "Error: Socket TPM should not be running anymore."
+	exit 1
+fi
+
+if [ -f $PID_FILE ]; then
+	echo "Error: Socket TPM should have removed the PID file."
+	exit 1
+fi
+
+echo "OK"
+
+
+# Test 3: test the control channel on the socket tpm: resume encrypted state
+
+# copy all the state files
+cp ${PWD}/${DIR}/data/tpmstate2/* ${TPMDIR}
+
+$SWTPM_EXE socket \
+	--server port=65530,disconnect=true \
+	--tpmstate dir=$TPMDIR \
+	--pid file=$PID_FILE \
+	--ctrl type=unixio,path=$SOCK_PATH \
+	--key pwdfile=${PWD}/${DIR}/data/tpmstate2/pwdfile.txt &
+
+if wait_for_file $PID_FILE 3; then
+	echo "Error: Socket TPM did not write pidfile."
+	exit 1
+fi
+
+PID="$(cat $PID_FILE)"
+
+
+# Read PCR 10
+exec 100<>/dev/tcp/localhost/65530
+echo -en '\x00\xC1\x00\x00\x00\x0E\x00\x00\x00\x15\x00\x00\x00\x0a' >&100
+RES=$(cat <&100 | od -t x1 -A n -w128)
+exp=' 00 c4 00 00 00 1e 00 00 00 00 c7 8a 6e 94 c7 3c 4d 7f c3 05 c8 a6 6b bf 15 45 f4 ed b7 a5'
+if [ "$RES" != "$exp" ]; then
+	echo "Error: (1) Did not get expected result from TPM_PCRRead(10)"
+	echo "expected: $exp"
+	echo "received: $RES"
+	exit 1
+fi
+
+# Get the volatile state of the TPM: CMD_GET_STATEBLOB = 00 00 00 0c
+#                    cmd  |     flags     |     type      |    offset     |
+echo -en '\x00\x00\x00\x0c\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+vstate="$(cat $RESP_PATH)"
+#      result    |   flags   | totlength |   length  |
+exp=" 00 00 00 00 00 00 00 02 00 00 04 fa 00 00 04 fa"
+if [ "${vstate:0:48}" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_GET_STATEBLOB:"
+	echo "       actual  : ${vstate:0:48}"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# Send shutdown command to the TPM: CMD_SHUTDOWN = 00 00 00 03
+echo -en '\x00\x00\x00\x03' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_SHUTDOWN:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+sleep 0.2
+kill -0 $PID 2>/dev/null
+if [ $? -eq 0 ]; then
+	echo "Error: Socket TPM should not be running anymore."
+	exit 1
+fi
+
+if [ -f $PID_FILE ]; then
+	echo "Error: Socket TPM should have removed the PID file."
+	exit 1
+fi
+
+
+# remove volatile state
+rm -f $TPMDIR/*.volatilestate
+
+$SWTPM_EXE socket \
+	--server port=65530,disconnect=true \
+	--tpmstate dir=$TPMDIR \
+	--pid file=$PID_FILE \
+	--ctrl type=unixio,path=$SOCK_PATH \
+	--key pwdfile=${PWD}/${DIR}/data/tpmstate2/pwdfile.txt &
+
+if wait_for_file $PID_FILE 3; then
+	echo "Error: Socket TPM did not write pidfile."
+	exit 1
+fi
+
+PID="$(cat $PID_FILE)"
+
+
+# Read PCR 10 -- this should fail now
+exec 100<>/dev/tcp/localhost/65530
+echo -en '\x00\xC1\x00\x00\x00\x0E\x00\x00\x00\x15\x00\x00\x00\x0a' >&100
+RES=$(cat <&100 | od -t x1 -A n -w128)
+exp=' 00 c4 00 00 00 0a 00 00 00 26'
+if [ "$RES" != "$exp" ]; then
+	echo "Error: (1) Did not get expected result from TPM_PCRRead(10)"
+	echo "expected: $exp"
+	echo "received: $RES"
+	exit 1
+fi
+
+
+# Send stop command to the TPM: CMD_STOP = 00 00 00 0e
+echo -en '\x00\x00\x00\x0e' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_STOP:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# Send the volatile state to the TPM (while it is stopped)
+#         |      cmd      |    flags      |     type      |
+echo -en '\x00\x00\x00\x0d\x00\x00\x00\x02\x00\x00\x00\x02' >$CMD_PATH
+vstate=${vstate:48}
+size=$((${#vstate} / 3))
+size=$(printf "%08x" $size | sed 's/\([0-9a-f]\{2\}\)/\\x\1/g')
+echo -en $size >> $CMD_PATH
+vstate=$(echo "${vstate}" | sed 's/ /\\x/g')
+echo -en $vstate >> $CMD_PATH
+
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_SET_STATEBLOB:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# Send init command to the TPM: CMD_INIT = 00 00 00 02
+echo -en '\x00\x00\x00\x02\x00\x00\x00\x00' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_INIT:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+
+# Read PCR 10 -- has to return same result as before
+exec 100<>/dev/tcp/localhost/65530
+echo -en '\x00\xC1\x00\x00\x00\x0E\x00\x00\x00\x15\x00\x00\x00\x0a' >&100
+RES=$(cat <&100 | od -t x1 -A n -w128)
+exp=' 00 c4 00 00 00 1e 00 00 00 00 c7 8a 6e 94 c7 3c 4d 7f c3 05 c8 a6 6b bf 15 45 f4 ed b7 a5'
+if [ "$RES" != "$exp" ]; then
+	echo "Error: (1) Did not get expected result from TPM_PCRRead(10)"
+	echo "expected: $exp"
+	echo "received: $RES"
+	exit 1
+fi
+
+
+# Reset PCR 20 while in locality 0 -- should not work
+exec 100<>/dev/tcp/localhost/65530
+echo -en '\x00\xC1\x00\x00\x00\x0F\x00\x00\x00\xC8\x00\x03\x00\x00\x10' >&100
+RES=$(cat <&100 | od -t x1 -A n)
+exp=' 00 c4 00 00 00 0a 00 00 00 33'
+if [ "$RES" != "$exp" ]; then
+	echo "Error: Trying to reset PCR 20 in locality 0 returned unexpected result"
+	echo "expected: $exp"
+	echo "received: $RES"
+	exit 1
+fi
+
+# In locality 2 we can reset PCR 20
+# Set the localoty on the TPM: CMD_SET_LOCALITY = 00 00 00 05 <locality>
+echo -en '\x00\x00\x00\x05\x02' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_SET_LOCALITY:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+# Reset PCR 20 while in locality 2 -- has to work
+exec 100<>/dev/tcp/localhost/65530
+echo -en '\x00\xC1\x00\x00\x00\x0F\x00\x00\x00\xC8\x00\x03\x00\x00\x10' >&100
+RES=$(cat <&100 | od -t x1 -A n)
+exp=' 00 c4 00 00 00 0a 00 00 00 00'
+if [ "$RES" != "$exp" ]; then
+	echo "Error: Could not reset PCR 20 in locality 2"
+	echo "expected: $exp"
+	echo "received: $RES"
+	exit 1
+fi
+
+
+# Send shutdown command to the TPM: CMD_SHUTDOWN = 00 00 00 03
+echo -en '\x00\x00\x00\x03' > $CMD_PATH
+socat -x -t10 FILE:$CMD_PATH,rdonly UNIX-CONNECT:$SOCK_PATH 2>&1 | \
+	sed -n '/^ /p' | \
+	tail -n1 > $RESP_PATH
+res="$(cat $RESP_PATH)"
+exp=" 00 00 00 00"
+if [ "$res" != "$exp" ]; then
+	echo "Error: Socket TPM: Unexpected response from CMD_SHUTDOWN:"
+	echo "       actual  : $res"
+	echo "       expected: $exp"
+	exit 1
+fi
+
+sleep 0.2
+kill -0 $PID 2>/dev/null
+if [ $? -eq 0 ]; then
+	echo "Error: Socket TPM should not be running anymore."
+	exit 1
+fi
+
+if [ -f $PID_FILE ]; then
+	echo "Error: Socket TPM should have removed the PID file."
+	exit 1
+fi
+
+echo "OK"
+
+exit 0

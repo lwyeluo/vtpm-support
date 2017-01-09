@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libtpms
+Version: @VERSION@
+Description: libtpms
+Libs: -L${libdir} -ltpms
+Cflags: -I${includedir}

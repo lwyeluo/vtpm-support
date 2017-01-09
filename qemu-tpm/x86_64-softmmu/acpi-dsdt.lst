@@ -1,0 +1,2308 @@
+
+Intel ACPI Component Architecture
+ASL Optimizing Compiler version 20140214-64 [Mar 29 2014]
+Copyright (c) 2000 - 2014 Intel Corporation
+
+Compilation of "acpi-dsdt.dsl.i" - Fri Oct 21 20:25:09 2016
+
+       2:  /* ACPI_EXTRACT_ALL_CODE AcpiDsdtAmlCode */
+       4:  DefinitionBlock (
+       5:      "acpi-dsdt.aml",
+       6:      "DSDT",
+       7:      0x01,
+       8:      "BXPC",
+       9:      "BXDSDT",
+      10:      0x1
+      11:      )
+
+00000000:  44 53 44 54 D4 0B 00 00     "DSDT...."
+00000008:  01 26 42 58 50 43 00 00     ".&BXPC.."
+00000010:  42 58 44 53 44 54 00 00     "BXDSDT.."
+00000018:  01 00 00 00 49 4E 54 4C     "....INTL"
+00000020:  14 02 14 20 ............    "... "
+
+      12:  {
+      13:  Scope(\) {
+
+00000024:  10 49 04 5C 00 .........    ".I.\."
+
+      14:      OperationRegion(DBG, SystemIO, 0x0402, 0x01)
+
+[****iasl****]
+acpi-dsdt.dsl.i     13:     OperationRegion(DBG, SystemIO, 0x0402, 0x01)
+Optimize 1039 -          Integer optimized to single-byte AML opcode ^  (One)
+
+
+
+00000029:  5B 80 44 42 47 5F 01 0B     "[.DBG_.."
+00000031:  02 04 01 ...............    "..."
+
+      15:      Field(DBG, ByteAcc, NoLock, Preserve) {
+      16:          DBGB, 8,
+      17:      }
+
+00000034:  5B 81 0B 44 42 47 5F 01     "[..DBG_."
+0000003C:  44 42 47 42 08 .........    "DBGB."
+
+      18:      Method(DBUG, 1) {
+
+00000041:  14 2C 44 42 55 47 01 ...    ".,DBUG."
+
+      19:          ToHexString(Arg0, Local0)
+
+00000048:  98 68 60 ...............    ".h`"
+
+      20:          ToBuffer(Local0, Local0)
+
+0000004B:  96 60 60 ...............    ".``"
+
+      21:          Subtract(SizeOf(Local0), 1, Local1)
+
+[****iasl****]
+acpi-dsdt.dsl.i     20:         Subtract(SizeOf(Local0), 1, Local1)
+Optimize 1039 -                                         ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+0000004E:  74 .....................    "t"
+0000004F:  87 60 01 61 ............    ".`.a"
+
+      22:          Store(Zero, Local2)
+
+00000053:  70 00 62 ...............    "p.b"
+
+      23:          While (LLess(Local2, Local1)) {
+
+00000056:  A2 10 ..................    ".."
+00000058:  95 62 61 ...............    ".ba"
+
+      24:              Store(DerefOf(Index(Local0, Local2)), DBGB)
+
+0000005B:  70 .....................    "p"
+0000005C:  83 .....................    "."
+0000005D:  88 60 62 00 44 42 47 42     ".`b.DBGB"
+
+      25:              Increment(Local2)
+
+00000065:  75 62 ..................    "ub"
+
+      26:          }
+      27:          Store(0x0A, DBGB)
+
+00000067:  70 0A 0A 44 42 47 42 ...    "p..DBGB"
+
+      28:      }
+      29:  }
+      30:      Scope(\_SB) {
+
+[****iasl****]
+acpi-dsdt.dsl.i     29:     Scope(\_SB) {
+Optimize 1075 -  NamePath optimized ^  (_SB_)
+
+
+
+0000006E:  10 22 5F 53 42 5F ......    "."_SB_"
+
+      31:          Device(PCI0) {
+
+00000074:  5B 82 1B 50 43 49 30 ...    "[..PCI0"
+
+      32:              Name(_HID, EisaId("PNP0A03"))
+
+0000007B:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+00000083:  0A 03 ..................    ".."
+
+      33:              Name(_ADR, 0x00)
+
+[****iasl****]
+acpi-dsdt.dsl.i     32:             Name(_ADR, 0x00)
+Optimize 1039 -                                  ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+00000085:  08 5F 41 44 52 00 ......    "._ADR."
+
+      34:              Name(_UID, 1)
+
+[****iasl****]
+acpi-dsdt.dsl.i     33:             Name(_UID, 1)
+Optimize 1039 -                               ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+0000008B:  08 5F 55 49 44 01 ......    "._UID."
+
+      35:          }
+      36:      }
+      37:  Scope(\_SB) {
+
+[****iasl****]
+acpi-dsdt.dsl.i     36: Scope(\_SB) {
+Optimize 1075 -                 ^ NamePath optimized (_SB_)
+
+
+
+00000091:  10 4D 08 5F 53 42 5F ...    ".M._SB_"
+
+      38:      Device(HPET) {
+
+00000098:  5B 82 45 08 48 50 45 54     "[.E.HPET"
+
+      39:          Name(_HID, EISAID("PNP0103"))
+
+000000A0:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+000000A8:  01 03 ..................    ".."
+
+      40:          Name(_UID, 0)
+
+[****iasl****]
+acpi-dsdt.dsl.i     39:         Name(_UID, 0)
+Optimize 1039 -                           ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+000000AA:  08 5F 55 49 44 00 ......    "._UID."
+
+      41:          OperationRegion(HPTM, SystemMemory, 0xFED00000, 0x400)
+
+000000B0:  5B 80 48 50 54 4D 00 0C     "[.HPTM.."
+000000B8:  00 00 D0 FE 0B 00 04 ...    "......."
+
+      42:          Field(HPTM, DWordAcc, Lock, Preserve) {
+      43:              VEND, 32,
+      44:              PRD, 32,
+      45:          }
+
+000000BF:  5B 81 10 48 50 54 4D 13     "[..HPTM."
+000000C7:  56 45 4E 44 20 50 52 44     "VEND PRD"
+000000CF:  5F 20 ..................    "_ "
+
+      46:          Method(_STA, 0, NotSerialized) {
+
+000000D1:  14 36 5F 53 54 41 00 ...    ".6_STA."
+
+      47:              Store(VEND, Local0)
+
+000000D8:  70 56 45 4E 44 60 ......    "pVEND`"
+
+      48:              Store(PRD, Local1)
+
+000000DE:  70 50 52 44 5F 61 ......    "pPRD_a"
+
+      49:              ShiftRight(Local0, 16, Local0)
+
+000000E4:  7A 60 0A 10 60 .........    "z`..`"
+
+      50:              If (LOr(LEqual(Local0, 0), LEqual(Local0, 0xffff))) {
+
+[****iasl****]
+acpi-dsdt.dsl.i     49:             If (LOr(LEqual(Local0, 0), LEqual(Local0, 0xffff))) {
+Optimize 1039 -                                           ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+000000E9:  A0 0C ..................    ".."
+000000EB:  91 .....................    "."
+000000EC:  93 60 00 ...............    ".`."
+000000EF:  93 60 0B FF FF .........    ".`..."
+
+      51:                  Return (0x0)
+
+[****iasl****]
+acpi-dsdt.dsl.i     50:                 Return (0x0)
+Optimize 1039 -                                  ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+000000F4:  A4 00 ..................    ".."
+
+      52:              }
+      53:              If (LOr(LEqual(Local1, 0), LGreater(Local1, 100000000))) {
+
+[****iasl****]
+acpi-dsdt.dsl.i     52:             If (LOr(LEqual(Local1, 0), LGreater(Local1, 100000000))) {
+Optimize 1039 -                                           ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+000000F6:  A0 0E ..................    ".."
+000000F8:  91 .....................    "."
+000000F9:  93 61 00 ...............    ".a."
+000000FC:  94 61 0C 00 E1 F5 05 ...    ".a....."
+
+      54:                  Return (0x0)
+
+[****iasl****]
+acpi-dsdt.dsl.i     53:                 Return (0x0)
+Optimize 1039 -                                  ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+00000103:  A4 00 ..................    ".."
+
+      55:              }
+      56:              Return (0x0F)
+
+00000105:  A4 0A 0F ...............    "..."
+
+      57:          }
+      58:          Name(_CRS, ResourceTemplate() {
+
+00000108:  08 5F 43 52 53 11 11 0A     "._CRS..."
+00000110:  0E .....................    "."
+
+      59:              Memory32Fixed(ReadOnly,
+      60:                  0xFED00000,
+      61:                  0x00000400,
+      62:                  )
+
+00000111:  86 09 00 00 00 00 D0 FE     "........"
+00000119:  00 04 00 00 ............    "...."
+0000011D:  79 00 ..................    "y."
+
+      63:          })
+      64:      }
+      65:  }
+      66:      Scope(\_SB.PCI0) {
+
+[****iasl****]
+acpi-dsdt.dsl.i     65:     Scope(\_SB.PCI0) {
+Optimize 1075 -       NamePath optimized ^  (_SB_.PCI0)
+
+
+
+0000011F:  10 25 2E 5F 53 42 5F 50     ".%._SB_P"
+00000127:  43 49 30 ...............    "CI0"
+
+      67:          Device(PX13) {
+
+0000012A:  5B 82 19 50 58 31 33 ...    "[..PX13"
+
+      68:              Name(_ADR, 0x00010003)
+
+00000131:  08 5F 41 44 52 0C 03 00     "._ADR..."
+00000139:  01 00 ..................    ".."
+
+      69:              OperationRegion(P13C, PCI_Config, 0x00, 0xff)
+
+[****iasl****]
+acpi-dsdt.dsl.i     68:             OperationRegion(P13C, PCI_Config, 0x00, 0xff)
+Optimize 1039 -             Integer optimized to single-byte AML opcode ^  (Zero)
+
+
+
+0000013B:  5B 80 50 31 33 43 02 00     "[.P13C.."
+00000143:  0A FF ..................    ".."
+
+      70:          }
+      71:      }
+      72:      Scope(\_SB.PCI0) {
+
+[****iasl****]
+acpi-dsdt.dsl.i     71:     Scope(\_SB.PCI0) {
+Optimize 1075 -       NamePath optimized ^  (_SB_.PCI0)
+
+
+
+00000145:  10 46 05 2E 5F 53 42 5F     ".F.._SB_"
+0000014D:  50 43 49 30 ............    "PCI0"
+
+      73:          External(ISA, DeviceObj)
+      74:          Device(ISA) {
+
+00000151:  5B 82 49 04 49 53 41 5F     "[.I.ISA_"
+
+      75:              Name(_ADR, 0x00010000)
+
+00000159:  08 5F 41 44 52 0C 00 00     "._ADR..."
+00000161:  01 00 ..................    ".."
+
+      76:              OperationRegion(P40C, PCI_Config, 0x60, 0x04)
+
+00000163:  5B 80 50 34 30 43 02 0A     "[.P40C.."
+0000016B:  60 0A 04 ...............    "`.."
+
+      77:              Field(\_SB.PCI0.PX13.P13C, AnyAcc, NoLock, Preserve) {
+
+[****iasl****]
+acpi-dsdt.dsl.i     76:             Field(\_SB.PCI0.PX13.P13C, AnyAcc, NoLock, Preserve) {
+Optimize 1075 -                         NamePath optimized ^  (^PX13.P13C)
+
+
+      78:                  Offset(0x5f),
+      79:                  , 7,
+      80:                  LPEN, 1,
+      81:                  Offset(0x67),
+      82:                  , 3,
+      83:                  CAEN, 1,
+      84:                  , 3,
+      85:                  CBEN, 1,
+      86:              }
+
+0000016E:  5B 81 26 5E 2E 50 58 31     "[.&^.PX1"
+00000176:  33 50 31 33 43 00 00 48     "3P13C..H"
+0000017E:  2F 00 07 4C 50 45 4E 01     "/..LPEN."
+00000186:  00 38 00 03 43 41 45 4E     ".8..CAEN"
+0000018E:  01 00 03 43 42 45 4E 01     "...CBEN."
+
+      87:              Name(FDEN, 1)
+
+[****iasl****]
+acpi-dsdt.dsl.i     86:             Name(FDEN, 1)
+Optimize 1039 -                               ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+00000196:  08 46 44 45 4E 01 ......    ".FDEN."
+
+      88:          }
+      89:      }
+      90:  Scope(\_SB.PCI0.ISA) {
+
+[****iasl****]
+acpi-dsdt.dsl.i     89: Scope(\_SB.PCI0.ISA) {
+Optimize 1075 -       NamePath optimized ^  (_SB_.PCI0.ISA_)
+
+
+
+0000019C:  10 4C 1B 2F 03 5F 53 42     ".L./._SB"
+000001A4:  5F 50 43 49 30 49 53 41     "_PCI0ISA"
+000001AC:  5F .....................    "_"
+
+      91:      Device(RTC) {
+
+000001AD:  5B 82 2D 52 54 43 5F ...    "[.-RTC_"
+
+      92:          Name(_HID, EisaId("PNP0B00"))
+
+000001B4:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+000001BC:  0B 00 ..................    ".."
+
+      93:          Name(_CRS, ResourceTemplate() {
+
+000001BE:  08 5F 43 52 53 11 18 0A     "._CRS..."
+000001C6:  15 .....................    "."
+
+      94:              IO(Decode16, 0x0070, 0x0070, 0x10, 0x02)
+
+000001C7:  47 01 70 00 70 00 10 02     "G.p.p..."
+
+      95:              IRQNoFlags() { 8 }
+
+000001CF:  22 00 01 ...............    "".."
+
+      96:              IO(Decode16, 0x0072, 0x0072, 0x02, 0x06)
+
+000001D2:  47 01 72 00 72 00 02 06     "G.r.r..."
+000001DA:  79 00 ..................    "y."
+
+      97:          })
+      98:      }
+      99:      Device(KBD) {
+
+000001DC:  5B 82 37 4B 42 44 5F ...    "[.7KBD_"
+
+     100:          Name(_HID, EisaId("PNP0303"))
+
+000001E3:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+000001EB:  03 03 ..................    ".."
+
+     101:          Method(_STA, 0, NotSerialized) {
+
+000001ED:  14 09 5F 53 54 41 00 ...    ".._STA."
+
+     102:              Return (0x0f)
+
+000001F4:  A4 0A 0F ...............    "..."
+
+     103:          }
+     104:          Name(_CRS, ResourceTemplate() {
+
+000001F7:  08 5F 43 52 53 11 18 0A     "._CRS..."
+000001FF:  15 .....................    "."
+
+     105:              IO(Decode16, 0x0060, 0x0060, 0x01, 0x01)
+
+00000200:  47 01 60 00 60 00 01 01     "G.`.`..."
+
+     106:              IO(Decode16, 0x0064, 0x0064, 0x01, 0x01)
+
+00000208:  47 01 64 00 64 00 01 01     "G.d.d..."
+
+     107:              IRQNoFlags() { 1 }
+
+00000210:  22 02 00 ...............    "".."
+00000213:  79 00 ..................    "y."
+
+     108:          })
+     109:      }
+     110:      Device(MOU) {
+
+00000215:  5B 82 27 4D 4F 55 5F ...    "[.'MOU_"
+
+     111:          Name(_HID, EisaId("PNP0F13"))
+
+0000021C:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+00000224:  0F 13 ..................    ".."
+
+     112:          Method(_STA, 0, NotSerialized) {
+
+00000226:  14 09 5F 53 54 41 00 ...    ".._STA."
+
+     113:              Return (0x0f)
+
+0000022D:  A4 0A 0F ...............    "..."
+
+     114:          }
+     115:          Name(_CRS, ResourceTemplate() {
+
+00000230:  08 5F 43 52 53 11 08 0A     "._CRS..."
+00000238:  05 .....................    "."
+
+     116:              IRQNoFlags() { 12 }
+
+00000239:  22 00 10 ...............    "".."
+0000023C:  79 00 ..................    "y."
+
+     117:          })
+     118:      }
+     119:      Device(FDC0) {
+
+0000023E:  5B 82 4A 04 46 44 43 30     "[.J.FDC0"
+
+     120:          Name(_HID, EisaId("PNP0700"))
+
+00000246:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+0000024E:  07 00 ..................    ".."
+
+     121:          Method(_STA, 0, NotSerialized) {
+
+00000250:  14 18 5F 53 54 41 00 ...    ".._STA."
+
+     122:              Store(FDEN, Local0)
+
+00000257:  70 46 44 45 4E 60 ......    "pFDEN`"
+
+     123:              If (LEqual(Local0, 0)) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    122:             If (LEqual(Local0, 0)) {
+Optimize 1039 -                                       ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+0000025D:  A0 06 ..................    ".."
+0000025F:  93 60 00 ...............    ".`."
+
+     124:                  Return (0x00)
+
+[****iasl****]
+acpi-dsdt.dsl.i    123:                 Return (0x00)
+Optimize 1039 -                                   ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+00000262:  A4 00 ..................    ".."
+
+     125:              } Else {
+     126:                  Return (0x0F)
+
+00000264:  A1 04 ..................    ".."
+00000266:  A4 0A 0F ...............    "..."
+
+     127:              }
+     128:          }
+     129:          Name(_CRS, ResourceTemplate() {
+
+00000269:  08 5F 43 52 53 11 1B 0A     "._CRS..."
+00000271:  18 .....................    "."
+
+     130:              IO(Decode16, 0x03F2, 0x03F2, 0x00, 0x04)
+
+00000272:  47 01 F2 03 F2 03 00 04     "G......."
+
+     131:              IO(Decode16, 0x03F7, 0x03F7, 0x00, 0x01)
+
+0000027A:  47 01 F7 03 F7 03 00 01     "G......."
+
+     132:              IRQNoFlags() { 6 }
+
+00000282:  22 40 00 ...............    ""@."
+
+     133:              DMA(Compatibility, NotBusMaster, Transfer8) { 2 }
+
+00000285:  2A 04 00 ...............    "*.."
+00000288:  79 00 ..................    "y."
+
+     134:          })
+     135:      }
+     136:      Device(LPT) {
+
+0000028A:  5B 82 3E 4C 50 54 5F ...    "[.>LPT_"
+
+     137:          Name(_HID, EisaId("PNP0400"))
+
+00000291:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+00000299:  04 00 ..................    ".."
+
+     138:          Method(_STA, 0, NotSerialized) {
+
+0000029B:  14 18 5F 53 54 41 00 ...    ".._STA."
+
+     139:              Store(LPEN, Local0)
+
+000002A2:  70 4C 50 45 4E 60 ......    "pLPEN`"
+
+     140:              If (LEqual(Local0, 0)) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    139:             If (LEqual(Local0, 0)) {
+Optimize 1039 -                                       ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+000002A8:  A0 06 ..................    ".."
+000002AA:  93 60 00 ...............    ".`."
+
+     141:                  Return (0x00)
+
+[****iasl****]
+acpi-dsdt.dsl.i    140:                 Return (0x00)
+Optimize 1039 -                                   ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+000002AD:  A4 00 ..................    ".."
+
+     142:              } Else {
+     143:                  Return (0x0F)
+
+000002AF:  A1 04 ..................    ".."
+000002B1:  A4 0A 0F ...............    "..."
+
+     144:              }
+     145:          }
+     146:          Name(_CRS, ResourceTemplate() {
+
+000002B4:  08 5F 43 52 53 11 10 0A     "._CRS..."
+000002BC:  0D .....................    "."
+
+     147:              IO(Decode16, 0x0378, 0x0378, 0x08, 0x08)
+
+000002BD:  47 01 78 03 78 03 08 08     "G.x.x..."
+
+     148:              IRQNoFlags() { 7 }
+
+000002C5:  22 80 00 ...............    "".."
+000002C8:  79 00 ..................    "y."
+
+     149:          })
+     150:      }
+     151:      Device(COM1) {
+
+000002CA:  5B 82 45 04 43 4F 4D 31     "[.E.COM1"
+
+     152:          Name(_HID, EisaId("PNP0501"))
+
+000002D2:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+000002DA:  05 01 ..................    ".."
+
+     153:          Name(_UID, 0x01)
+
+[****iasl****]
+acpi-dsdt.dsl.i    152:         Name(_UID, 0x01)
+Optimize 1039 -                              ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+000002DC:  08 5F 55 49 44 01 ......    "._UID."
+
+     154:          Method(_STA, 0, NotSerialized) {
+
+000002E2:  14 18 5F 53 54 41 00 ...    ".._STA."
+
+     155:              Store(CAEN, Local0)
+
+000002E9:  70 43 41 45 4E 60 ......    "pCAEN`"
+
+     156:              If (LEqual(Local0, 0)) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    155:             If (LEqual(Local0, 0)) {
+Optimize 1039 -                                       ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+000002EF:  A0 06 ..................    ".."
+000002F1:  93 60 00 ...............    ".`."
+
+     157:                  Return (0x00)
+
+[****iasl****]
+acpi-dsdt.dsl.i    156:                 Return (0x00)
+Optimize 1039 -                                   ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+000002F4:  A4 00 ..................    ".."
+
+     158:              } Else {
+     159:                  Return (0x0F)
+
+000002F6:  A1 04 ..................    ".."
+000002F8:  A4 0A 0F ...............    "..."
+
+     160:              }
+     161:          }
+     162:          Name(_CRS, ResourceTemplate() {
+
+000002FB:  08 5F 43 52 53 11 10 0A     "._CRS..."
+00000303:  0D .....................    "."
+
+     163:              IO(Decode16, 0x03F8, 0x03F8, 0x00, 0x08)
+
+00000304:  47 01 F8 03 F8 03 00 08     "G......."
+
+     164:              IRQNoFlags() { 4 }
+
+0000030C:  22 10 00 ...............    "".."
+0000030F:  79 00 ..................    "y."
+
+     165:          })
+     166:      }
+     167:      Device(COM2) {
+
+00000311:  5B 82 46 04 43 4F 4D 32     "[.F.COM2"
+
+     168:          Name(_HID, EisaId("PNP0501"))
+
+00000319:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+00000321:  05 01 ..................    ".."
+
+     169:          Name(_UID, 0x02)
+
+00000323:  08 5F 55 49 44 0A 02 ...    "._UID.."
+
+     170:          Method(_STA, 0, NotSerialized) {
+
+0000032A:  14 18 5F 53 54 41 00 ...    ".._STA."
+
+     171:              Store(CBEN, Local0)
+
+00000331:  70 43 42 45 4E 60 ......    "pCBEN`"
+
+     172:              If (LEqual(Local0, 0)) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    171:             If (LEqual(Local0, 0)) {
+Optimize 1039 -                                       ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+00000337:  A0 06 ..................    ".."
+00000339:  93 60 00 ...............    ".`."
+
+     173:                  Return (0x00)
+
+[****iasl****]
+acpi-dsdt.dsl.i    172:                 Return (0x00)
+Optimize 1039 -                                   ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+0000033C:  A4 00 ..................    ".."
+
+     174:              } Else {
+     175:                  Return (0x0F)
+
+0000033E:  A1 04 ..................    ".."
+00000340:  A4 0A 0F ...............    "..."
+
+     176:              }
+     177:          }
+     178:          Name(_CRS, ResourceTemplate() {
+
+00000343:  08 5F 43 52 53 11 10 0A     "._CRS..."
+0000034B:  0D .....................    "."
+
+     179:              IO(Decode16, 0x02F8, 0x02F8, 0x00, 0x08)
+
+0000034C:  47 01 F8 02 F8 02 00 08     "G......."
+
+     180:              IRQNoFlags() { 3 }
+
+00000354:  22 08 00 ...............    "".."
+00000357:  79 00 ..................    "y."
+
+     181:          })
+     182:      }
+     183:  }
+     184:      Scope(\_SB.PCI0) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    183:     Scope(\_SB.PCI0) {
+Optimize 1075 -       NamePath optimized ^  (_SB_.PCI0)
+
+
+
+00000359:  10 48 08 2E 5F 53 42 5F     ".H.._SB_"
+00000361:  50 43 49 30 ............    "PCI0"
+
+     185:          OperationRegion(PCST, SystemIO, 0xae00, 0x08)
+
+00000365:  5B 80 50 43 53 54 01 0B     "[.PCST.."
+0000036D:  00 AE 0A 08 ............    "...."
+
+     186:          Field(PCST, DWordAcc, NoLock, WriteAsZeros) {
+     187:              PCIU, 32,
+     188:              PCID, 32,
+     189:          }
+
+00000371:  5B 81 10 50 43 53 54 43     "[..PCSTC"
+00000379:  50 43 49 55 20 50 43 49     "PCIU PCI"
+00000381:  44 20 ..................    "D "
+
+     190:          OperationRegion(SEJ, SystemIO, 0xae08, 0x04)
+
+00000383:  5B 80 53 45 4A 5F 01 0B     "[.SEJ_.."
+0000038B:  08 AE 0A 04 ............    "...."
+
+     191:          Field(SEJ, DWordAcc, NoLock, WriteAsZeros) {
+     192:              B0EJ, 32,
+     193:          }
+
+0000038F:  5B 81 0B 53 45 4A 5F 43     "[..SEJ_C"
+00000397:  42 30 45 4A 20 .........    "B0EJ "
+
+     194:          OperationRegion(BNMR, SystemIO, 0xae10, 0x04)
+
+0000039C:  5B 80 42 4E 4D 52 01 0B     "[.BNMR.."
+000003A4:  10 AE 0A 04 ............    "...."
+
+     195:          Field(BNMR, DWordAcc, NoLock, WriteAsZeros) {
+     196:              BNUM, 32,
+     197:          }
+
+000003A8:  5B 81 0B 42 4E 4D 52 43     "[..BNMRC"
+000003B0:  42 4E 55 4D 20 .........    "BNUM "
+
+     198:          Mutex(BLCK, 0)
+
+000003B5:  5B 01 42 4C 43 4B 00 ...    "[.BLCK."
+
+     199:          Method(PCEJ, 2, NotSerialized) {
+
+000003BC:  14 25 50 43 45 4A 02 ...    ".%PCEJ."
+
+     200:              Acquire(BLCK, 0xFFFF)
+
+000003C3:  5B 23 42 4C 43 4B FF FF     "[#BLCK.."
+
+     201:              Store(Arg0, BNUM)
+
+000003CB:  70 68 42 4E 55 4D ......    "phBNUM"
+
+     202:              Store(ShiftLeft(1, Arg1), B0EJ)
+
+[****iasl****]
+acpi-dsdt.dsl.i    201:             Store(ShiftLeft(1, Arg1), B0EJ)
+Optimize 1039 -                                    ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+000003D1:  70 .....................    "p"
+000003D2:  79 01 69 00 42 30 45 4A     "y.i.B0EJ"
+
+     203:              Release(BLCK)
+
+000003DA:  5B 27 42 4C 43 4B ......    "['BLCK"
+
+     204:              Return (0x0)
+
+[****iasl****]
+acpi-dsdt.dsl.i    203:             Return (0x0)
+Optimize 1039 -                              ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+000003E0:  A4 00 ..................    ".."
+
+     205:          }
+     206:          External(\_SB.PCI0.PCNT, MethodObj)
+     207:      }
+     208:      Scope(\_SB) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    207:     Scope(\_SB) {
+Optimize 1075 -  NamePath optimized ^  (_SB_)
+
+
+
+000003E2:  10 4E 36 5F 53 42 5F ...    ".N6_SB_"
+
+     209:          Scope(PCI0) {
+
+000003E9:  10 4B 0A 50 43 49 30 ...    ".K.PCI0"
+
+     210:              Method (_PRT, 0) {
+
+000003F0:  14 44 0A 5F 50 52 54 00     ".D._PRT."
+
+     211:                  Store(Package(128) {}, Local0)
+
+000003F8:  70 .....................    "p"
+000003F9:  12 02 80 60 ............    "...`"
+
+     212:                  Store(Zero, Local1)
+
+000003FD:  70 00 61 ...............    "p.a"
+
+     213:                  While(LLess(Local1, 128)) {
+
+00000400:  A2 42 09 ...............    ".B."
+00000403:  95 61 0A 80 ............    ".a.."
+
+     214:                      Store(ShiftRight(Local1, 2), Local2)
+
+00000407:  70 .....................    "p"
+00000408:  7A 61 0A 02 00 62 ......    "za...b"
+
+     215:                      Store(And(Add(Local1, Local2), 3), Local3)
+
+0000040E:  70 .....................    "p"
+0000040F:  7B .....................    "{"
+00000410:  72 61 62 00 0A 03 00 63     "rab....c"
+
+     216:                      If (LEqual(Local3, 0)) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    215:                     If (LEqual(Local3, 0)) {
+Optimize 1039 -   Integer optimized to single-byte AML opcode ^  (Zero)
+
+
+
+00000418:  A0 10 ..................    ".."
+0000041A:  93 63 00 ...............    ".c."
+
+     217:                          Store(Package(4) { Zero, Zero, LNKD, Zero }, Local4)
+
+0000041D:  70 .....................    "p"
+0000041E:  12 09 04 00 00 4C 4E 4B     ".....LNK"
+00000426:  44 00 64 ...............    "D.d"
+
+     218:                      }
+     219:                      If (LEqual(Local3, 1)) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    218:                     If (LEqual(Local3, 1)) {
+Optimize 1039 -   Integer optimized to single-byte AML opcode ^  (One)
+
+
+
+00000429:  A0 24 ..................    ".$"
+0000042B:  93 63 01 ...............    ".c."
+
+     220:                          If (LEqual(Local1, 4)) {
+
+0000042E:  A0 11 ..................    ".."
+00000430:  93 61 0A 04 ............    ".a.."
+
+     221:                              Store(Package(4) { Zero, Zero, LNKS, Zero }, Local4)
+
+00000434:  70 .....................    "p"
+00000435:  12 09 04 00 00 4C 4E 4B     ".....LNK"
+0000043D:  53 00 64 ...............    "S.d"
+
+     222:                          } Else {
+     223:                              Store(Package(4) { Zero, Zero, LNKA, Zero }, Local4)
+
+00000440:  A1 0D ..................    ".."
+00000442:  70 .....................    "p"
+00000443:  12 09 04 00 00 4C 4E 4B     ".....LNK"
+0000044B:  41 00 64 ...............    "A.d"
+
+     224:                          }
+     225:                      }
+     226:                      If (LEqual(Local3, 2)) {
+
+0000044E:  A0 11 ..................    ".."
+00000450:  93 63 0A 02 ............    ".c.."
+
+     227:                          Store(Package(4) { Zero, Zero, LNKB, Zero }, Local4)
+
+00000454:  70 .....................    "p"
+00000455:  12 09 04 00 00 4C 4E 4B     ".....LNK"
+0000045D:  42 00 64 ...............    "B.d"
+
+     228:                      }
+     229:                      If (LEqual(Local3, 3)) {
+
+00000460:  A0 11 ..................    ".."
+00000462:  93 63 0A 03 ............    ".c.."
+
+     230:                          Store(Package(4) { Zero, Zero, LNKC, Zero }, Local4)
+
+00000466:  70 .....................    "p"
+00000467:  12 09 04 00 00 4C 4E 4B     ".....LNK"
+0000046F:  43 00 64 ...............    "C.d"
+
+     231:                      }
+     232:                      Store(Or(ShiftLeft(Local2, 16), 0xFFFF), Index(Local4, 0))
+
+[****iasl****]
+acpi-dsdt.dsl.i    231:                     Store(Or(ShiftLeft(Local2, 16), 0xFFFF), Index(Local4, 0))
+Optimize 1039 -                                       Integer optimized to single-byte AML opcode ^  (Zero)
+
+
+
+00000472:  70 .....................    "p"
+00000473:  7D .....................    "}"
+00000474:  79 62 0A 10 00 0B FF FF     "yb......"
+0000047C:  00 .....................    "."
+0000047D:  88 64 00 00 ............    ".d.."
+
+     233:                      Store(And(Local1, 3), Index(Local4, 1))
+
+[****iasl****]
+acpi-dsdt.dsl.i    232:                     Store(And(Local1, 3), Index(Local4, 1))
+Optimize 1039 -                    Integer optimized to single-byte AML opcode ^  (One)
+
+
+
+00000481:  70 .....................    "p"
+00000482:  7B 61 0A 03 00 .........    "{a..."
+00000487:  88 64 01 00 ............    ".d.."
+
+     234:                      Store(Local4, Index(Local0, Local1))
+
+0000048B:  70 64 ..................    "pd"
+0000048D:  88 60 61 00 ............    ".`a."
+
+     235:                      Increment(Local1)
+
+00000491:  75 61 ..................    "ua"
+
+     236:                  }
+     237:                  Return(Local0)
+
+00000493:  A4 60 ..................    ".`"
+
+     238:              }
+     239:          }
+     240:          Field(PCI0.ISA.P40C, ByteAcc, NoLock, Preserve) {
+     241:              PRQ0, 8,
+     242:              PRQ1, 8,
+     243:              PRQ2, 8,
+     244:              PRQ3, 8
+     245:          }
+
+00000495:  5B 81 24 2F 03 50 43 49     "[.$/.PCI"
+0000049D:  30 49 53 41 5F 50 34 30     "0ISA_P40"
+000004A5:  43 01 50 52 51 30 08 50     "C.PRQ0.P"
+000004AD:  52 51 31 08 50 52 51 32     "RQ1.PRQ2"
+000004B5:  08 50 52 51 33 08 ......    ".PRQ3."
+
+     246:          Method(IQST, 1, NotSerialized) {
+
+000004BB:  14 13 49 51 53 54 01 ...    "..IQST."
+
+     247:              If (And(0x80, Arg0)) {
+
+000004C2:  A0 09 ..................    ".."
+000004C4:  7B 0A 80 68 00 .........    "{..h."
+
+     248:                  Return (0x09)
+
+000004C9:  A4 0A 09 ...............    "..."
+
+     249:              }
+     250:              Return (0x0B)
+
+000004CC:  A4 0A 0B ...............    "..."
+
+     251:          }
+     252:          Method(IQCR, 1, Serialized) {
+
+000004CF:  14 36 49 51 43 52 09 ...    ".6IQCR."
+
+     253:              Name(PRR0, ResourceTemplate() {
+
+000004D6:  08 50 52 52 30 11 0E 0A     ".PRR0..."
+000004DE:  0B .....................    "."
+
+     254:                  Interrupt(, Level, ActiveHigh, Shared) { 0 }
+
+000004DF:  89 06 00 09 01 00 00 00     "........"
+000004E7:  00 .....................    "."
+000004E8:  79 00 ..................    "y."
+
+     255:              })
+     256:              CreateDWordField(PRR0, 0x05, PRRI)
+
+000004EA:  8A 50 52 52 30 0A 05 50     ".PRR0..P"
+000004F2:  52 52 49 ...............    "RRI"
+
+     257:              If (LLess(Arg0, 0x80)) {
+
+000004F5:  A0 0B ..................    ".."
+000004F7:  95 68 0A 80 ............    ".h.."
+
+     258:                  Store(Arg0, PRRI)
+
+000004FB:  70 68 50 52 52 49 ......    "phPRRI"
+
+     259:              }
+     260:              Return (PRR0)
+
+00000501:  A4 50 52 52 30 .........    ".PRR0"
+
+     261:          }
+     262:          Device(LNKA) { Name(_HID, EISAID("PNP0C0F")) Name(_UID, 0) Name(_PRS, ResourceTemplate() { Interrupt(, Level, ActiveHigh, Shared) 
+                {
+                    5, 10, 11 
+                }
+            }
+            ) Method(_STA, 0, NotSerialized) 
+            {
+                Return (IQST(PRQ0)) 
+            }
+            Method(_DIS, 0, NotSerialized) 
+            {
+                Or(PRQ0, 0x80, PRQ0) 
+            }
+            Method(_CRS, 0, NotSerialized) 
+            {
+                Return (IQCR(PRQ0)) 
+            }
+            Method(_SRS, 1, NotSerialized) 
+            {
+                CreateDWordField(Arg0, 0x05, PRRI) Store(PRRI, PRQ0) 
+            }
+        }
+        
+
+[****iasl****]
+acpi-dsdt.dsl.i    261:         Device(LNKA) { Name(_HID, EISAID("PNP0C0F")) Name(_UID, 0) Name(_PRS, ResourceTemplate() { Interrupt(, Level, ActiveHigh, Shared) { 5, 10, 11 } }) Method(_STA, 0, NotSerialized) { Return (IQST(PRQ0)) } Method(_DIS, 0, NotSerialized) { Or(PRQ0, 0x80
+[*** iASL: Very long input line, message below refers to column 65 ***]
+Optimize 1039 -    Integer optimized to single-byte AML opcode (Zero)
+
+
+
+00000506:  5B 82 4C 07 4C 4E 4B 41     "[.L.LNKA"
+0000050E:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+00000516:  0C 0F ..................    ".."
+00000518:  08 5F 55 49 44 00 ......    "._UID."
+0000051E:  08 5F 50 52 53 11 16 0A     "._PRS..."
+00000526:  13 .....................    "."
+00000527:  89 0E 00 09 03 05 00 00     "........"
+0000052F:  00 0A 00 00 00 0B 00 00     "........"
+00000537:  00 .....................    "."
+00000538:  79 00 ..................    "y."
+0000053A:  14 0F 5F 53 54 41 00 ...    ".._STA."
+00000541:  A4 .....................    "."
+00000542:  49 51 53 54 50 52 51 30     "IQSTPRQ0"
+0000054A:  14 11 5F 44 49 53 00 ...    ".._DIS."
+00000551:  7D 50 52 51 30 0A 80 50     "}PRQ0..P"
+00000559:  52 51 30 ...............    "RQ0"
+0000055C:  14 0F 5F 43 52 53 00 ...    ".._CRS."
+00000563:  A4 .....................    "."
+00000564:  49 51 43 52 50 52 51 30     "IQCRPRQ0"
+0000056C:  14 17 5F 53 52 53 01 ...    ".._SRS."
+00000573:  8A 68 0A 05 50 52 52 49     ".h..PRRI"
+0000057B:  70 50 52 52 49 50 52 51     "pPRRIPRQ"
+00000583:  30 .....................    "0"
+
+     263:          Device(LNKB) { Name(_HID, EISAID("PNP0C0F")) Name(_UID, 1) Name(_PRS, ResourceTemplate() { Interrupt(, Level, ActiveHigh, Shared) 
+                {
+                    5, 10, 11 
+                }
+            }
+            ) Method(_STA, 0, NotSerialized) 
+            {
+                Return (IQST(PRQ1)) 
+            }
+            Method(_DIS, 0, NotSerialized) 
+            {
+                Or(PRQ1, 0x80, PRQ1) 
+            }
+            Method(_CRS, 0, NotSerialized) 
+            {
+                Return (IQCR(PRQ1)) 
+            }
+            Method(_SRS, 1, NotSerialized) 
+            {
+                CreateDWordField(Arg0, 0x05, PRRI) Store(PRRI, PRQ1) 
+            }
+        }
+        
+
+[****iasl****]
+acpi-dsdt.dsl.i    262:         Device(LNKB) { Name(_HID, EISAID("PNP0C0F")) Name(_UID, 1) Name(_PRS, ResourceTemplate() { Interrupt(, Level, ActiveHigh, Shared) { 5, 10, 11 } }) Method(_STA, 0, NotSerialized) { Return (IQST(PRQ1)) } Method(_DIS, 0, NotSerialized) { Or(PRQ1, 0x80
+[*** iASL: Very long input line, message below refers to column 65 ***]
+Optimize 1039 -    Integer optimized to single-byte AML opcode (One)
+
+
+
+00000584:  5B 82 4C 07 4C 4E 4B 42     "[.L.LNKB"
+0000058C:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+00000594:  0C 0F ..................    ".."
+00000596:  08 5F 55 49 44 01 ......    "._UID."
+0000059C:  08 5F 50 52 53 11 16 0A     "._PRS..."
+000005A4:  13 .....................    "."
+000005A5:  89 0E 00 09 03 05 00 00     "........"
+000005AD:  00 0A 00 00 00 0B 00 00     "........"
+000005B5:  00 .....................    "."
+000005B6:  79 00 ..................    "y."
+000005B8:  14 0F 5F 53 54 41 00 ...    ".._STA."
+000005BF:  A4 .....................    "."
+000005C0:  49 51 53 54 50 52 51 31     "IQSTPRQ1"
+000005C8:  14 11 5F 44 49 53 00 ...    ".._DIS."
+000005CF:  7D 50 52 51 31 0A 80 50     "}PRQ1..P"
+000005D7:  52 51 31 ...............    "RQ1"
+000005DA:  14 0F 5F 43 52 53 00 ...    ".._CRS."
+000005E1:  A4 .....................    "."
+000005E2:  49 51 43 52 50 52 51 31     "IQCRPRQ1"
+000005EA:  14 17 5F 53 52 53 01 ...    ".._SRS."
+000005F1:  8A 68 0A 05 50 52 52 49     ".h..PRRI"
+000005F9:  70 50 52 52 49 50 52 51     "pPRRIPRQ"
+00000601:  31 .....................    "1"
+
+     264:          Device(LNKC) { Name(_HID, EISAID("PNP0C0F")) Name(_UID, 2) Name(_PRS, ResourceTemplate() { Interrupt(, Level, ActiveHigh, Shared) 
+                {
+                    5, 10, 11 
+                }
+            }
+            ) Method(_STA, 0, NotSerialized) 
+            {
+                Return (IQST(PRQ2)) 
+            }
+            Method(_DIS, 0, NotSerialized) 
+            {
+                Or(PRQ2, 0x80, PRQ2) 
+            }
+            Method(_CRS, 0, NotSerialized) 
+            {
+                Return (IQCR(PRQ2)) 
+            }
+            Method(_SRS, 1, NotSerialized) 
+            {
+                CreateDWordField(Arg0, 0x05, PRRI) Store(PRRI, PRQ2) 
+            }
+        }
+        
+
+00000602:  5B 82 4D 07 4C 4E 4B 43     "[.M.LNKC"
+0000060A:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+00000612:  0C 0F ..................    ".."
+00000614:  08 5F 55 49 44 0A 02 ...    "._UID.."
+0000061B:  08 5F 50 52 53 11 16 0A     "._PRS..."
+00000623:  13 .....................    "."
+00000624:  89 0E 00 09 03 05 00 00     "........"
+0000062C:  00 0A 00 00 00 0B 00 00     "........"
+00000634:  00 .....................    "."
+00000635:  79 00 ..................    "y."
+00000637:  14 0F 5F 53 54 41 00 ...    ".._STA."
+0000063E:  A4 .....................    "."
+0000063F:  49 51 53 54 50 52 51 32     "IQSTPRQ2"
+00000647:  14 11 5F 44 49 53 00 ...    ".._DIS."
+0000064E:  7D 50 52 51 32 0A 80 50     "}PRQ2..P"
+00000656:  52 51 32 ...............    "RQ2"
+00000659:  14 0F 5F 43 52 53 00 ...    ".._CRS."
+00000660:  A4 .....................    "."
+00000661:  49 51 43 52 50 52 51 32     "IQCRPRQ2"
+00000669:  14 17 5F 53 52 53 01 ...    ".._SRS."
+00000670:  8A 68 0A 05 50 52 52 49     ".h..PRRI"
+00000678:  70 50 52 52 49 50 52 51     "pPRRIPRQ"
+00000680:  32 .....................    "2"
+
+     265:          Device(LNKD) { Name(_HID, EISAID("PNP0C0F")) Name(_UID, 3) Name(_PRS, ResourceTemplate() { Interrupt(, Level, ActiveHigh, Shared) 
+                {
+                    5, 10, 11 
+                }
+            }
+            ) Method(_STA, 0, NotSerialized) 
+            {
+                Return (IQST(PRQ3)) 
+            }
+            Method(_DIS, 0, NotSerialized) 
+            {
+                Or(PRQ3, 0x80, PRQ3) 
+            }
+            Method(_CRS, 0, NotSerialized) 
+            {
+                Return (IQCR(PRQ3)) 
+            }
+            Method(_SRS, 1, NotSerialized) 
+            {
+                CreateDWordField(Arg0, 0x05, PRRI) Store(PRRI, PRQ3) 
+            }
+        }
+        
+
+00000681:  5B 82 4D 07 4C 4E 4B 44     "[.M.LNKD"
+00000689:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+00000691:  0C 0F ..................    ".."
+00000693:  08 5F 55 49 44 0A 03 ...    "._UID.."
+0000069A:  08 5F 50 52 53 11 16 0A     "._PRS..."
+000006A2:  13 .....................    "."
+000006A3:  89 0E 00 09 03 05 00 00     "........"
+000006AB:  00 0A 00 00 00 0B 00 00     "........"
+000006B3:  00 .....................    "."
+000006B4:  79 00 ..................    "y."
+000006B6:  14 0F 5F 53 54 41 00 ...    ".._STA."
+000006BD:  A4 .....................    "."
+000006BE:  49 51 53 54 50 52 51 33     "IQSTPRQ3"
+000006C6:  14 11 5F 44 49 53 00 ...    ".._DIS."
+000006CD:  7D 50 52 51 33 0A 80 50     "}PRQ3..P"
+000006D5:  52 51 33 ...............    "RQ3"
+000006D8:  14 0F 5F 43 52 53 00 ...    ".._CRS."
+000006DF:  A4 .....................    "."
+000006E0:  49 51 43 52 50 52 51 33     "IQCRPRQ3"
+000006E8:  14 17 5F 53 52 53 01 ...    ".._SRS."
+000006EF:  8A 68 0A 05 50 52 52 49     ".h..PRRI"
+000006F7:  70 50 52 52 49 50 52 51     "pPRRIPRQ"
+000006FF:  33 .....................    "3"
+
+     266:          Device(LNKS) {
+
+00000700:  5B 82 4F 04 4C 4E 4B 53     "[.O.LNKS"
+
+     267:              Name(_HID, EISAID("PNP0C0F"))
+
+00000708:  08 5F 48 49 44 0C 41 D0     "._HID.A."
+00000710:  0C 0F ..................    ".."
+
+     268:              Name(_UID, 4)
+
+00000712:  08 5F 55 49 44 0A 04 ...    "._UID.."
+
+     269:              Name(_PRS, ResourceTemplate() {
+
+00000719:  08 5F 50 52 53 11 0E 0A     "._PRS..."
+00000721:  0B .....................    "."
+
+     270:                  Interrupt(, Level, ActiveHigh, Shared) { 9 }
+
+00000722:  89 06 00 09 01 09 00 00     "........"
+0000072A:  00 .....................    "."
+0000072B:  79 00 ..................    "y."
+
+     271:              })
+     272:              Method(_STA, 0, NotSerialized) { Return (0x0b) }
+
+0000072D:  14 09 5F 53 54 41 00 ...    ".._STA."
+00000734:  A4 0A 0B ...............    "..."
+
+     273:              Method(_DIS, 0, NotSerialized) { }
+
+00000737:  14 06 5F 44 49 53 00 ...    ".._DIS."
+
+     274:              Method(_CRS, 0, NotSerialized) { Return (_PRS) }
+
+0000073E:  14 0B 5F 43 52 53 00 ...    ".._CRS."
+00000745:  A4 5F 50 52 53 .........    "._PRS"
+
+     275:              Method(_SRS, 1, NotSerialized) { }
+
+0000074A:  14 06 5F 53 52 53 01 ...    ".._SRS."
+
+     276:          }
+     277:      }
+     278:  Scope(\_SB) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    277: Scope(\_SB) {
+Optimize 1075 -                 ^ NamePath optimized (_SB_)
+
+
+
+00000751:  10 4D 0C 5F 53 42 5F ...    ".M._SB_"
+
+     279:      External(NTFY, MethodObj)
+     280:      External(CPON, PkgObj)
+     281:      External(PRS, FieldUnitObj)
+     282:      Method(CPMA, 1, NotSerialized) {
+
+00000758:  14 35 43 50 4D 41 01 ...    ".5CPMA."
+
+     283:          Store(DerefOf(Index(CPON, Arg0)), Local0)
+
+0000075F:  70 .....................    "p"
+00000760:  83 .....................    "."
+00000761:  88 43 50 4F 4E 68 00 60     ".CPONh.`"
+
+     284:          Store(Buffer(8) {0x00, 0x08, 0x00, 0x00, 0x00, 0, 0, 0}, Local1)
+
+00000769:  70 .....................    "p"
+0000076A:  11 0B 0A 08 00 08 00 00     "........"
+00000772:  00 00 00 00 61 .........    "....a"
+
+     285:          Store(Arg0, Index(Local1, 2))
+
+00000777:  70 68 ..................    "ph"
+00000779:  88 61 0A 02 00 .........    ".a..."
+
+     286:          Store(Arg0, Index(Local1, 3))
+
+0000077E:  70 68 ..................    "ph"
+00000780:  88 61 0A 03 00 .........    ".a..."
+
+     287:          Store(Local0, Index(Local1, 4))
+
+00000785:  70 60 ..................    "p`"
+00000787:  88 61 0A 04 00 .........    ".a..."
+
+     288:          Return (Local1)
+
+0000078C:  A4 61 ..................    ".a"
+
+     289:      }
+     290:      Method(CPST, 1, NotSerialized) {
+
+0000078E:  14 1A 43 50 53 54 01 ...    "..CPST."
+
+     291:          Store(DerefOf(Index(CPON, Arg0)), Local0)
+
+00000795:  70 .....................    "p"
+00000796:  83 .....................    "."
+00000797:  88 43 50 4F 4E 68 00 60     ".CPONh.`"
+
+     292:          If (Local0) {
+
+0000079F:  A0 05 60 ...............    "..`"
+
+     293:              Return (0xF)
+
+000007A2:  A4 0A 0F ...............    "..."
+
+     294:          } Else {
+     295:              Return (0x0)
+
+[****iasl****]
+acpi-dsdt.dsl.i    294:             Return (0x0)
+Optimize 1039 -                              ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+000007A5:  A1 03 ..................    ".."
+000007A7:  A4 00 ..................    ".."
+
+     296:          }
+     297:      }
+     298:      Method(CPEJ, 2, NotSerialized) {
+
+000007A9:  14 0A 43 50 45 4A 02 ...    "..CPEJ."
+
+     299:          Sleep(200)
+
+000007B0:  5B 22 0A C8 ............    "[".."
+
+     300:      }
+     301:      Method(PRSC, 0) {
+
+000007B4:  14 4A 06 50 52 53 43 00     ".J.PRSC."
+
+     302:          Store(PRS, Local5)
+
+000007BC:  70 50 52 53 5F 65 ......    "pPRS_e"
+
+     303:          Store(Zero, Local2)
+
+000007C2:  70 00 62 ...............    "p.b"
+
+     304:          Store(Zero, Local0)
+
+000007C5:  70 00 60 ...............    "p.`"
+
+     305:          While (LLess(Local0, SizeOf(CPON))) {
+
+000007C8:  A2 46 05 ...............    ".F."
+000007CB:  95 60 ..................    ".`"
+000007CD:  87 43 50 4F 4E .........    ".CPON"
+
+     306:              Store(DerefOf(Index(CPON, Local0)), Local1)
+
+000007D2:  70 .....................    "p"
+000007D3:  83 .....................    "."
+000007D4:  88 43 50 4F 4E 60 00 61     ".CPON`.a"
+
+     307:              If (And(Local0, 0x07)) {
+
+000007DC:  A0 0A ..................    ".."
+000007DE:  7B 60 0A 07 00 .........    "{`..."
+
+     308:                  ShiftRight(Local2, 1, Local2)
+
+[****iasl****]
+acpi-dsdt.dsl.i    307:                 ShiftRight(Local2, 1, Local2)
+Optimize 1039 -                                           ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+000007E3:  7A 62 01 62 ............    "zb.b"
+
+     309:              } Else {
+     310:                  Store(DerefOf(Index(Local5, ShiftRight(Local0, 3))), Local2)
+
+000007E7:  A1 0C ..................    ".."
+000007E9:  70 .....................    "p"
+000007EA:  83 .....................    "."
+000007EB:  88 65 ..................    ".e"
+000007ED:  7A 60 0A 03 00 00 62 ...    "z`....b"
+
+     311:              }
+     312:              Store(And(Local2, 1), Local3)
+
+[****iasl****]
+acpi-dsdt.dsl.i    311:             Store(And(Local2, 1), Local3)
+Optimize 1039 -                                      ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+000007F4:  70 .....................    "p"
+000007F5:  7B 62 01 00 63 .........    "{b..c"
+
+     313:              If (LNotEqual(Local1, Local3)) {
+
+000007FA:  A0 22 ..................    ".""
+000007FC:  92 .....................    "."
+000007FD:  93 61 63 ...............    ".ac"
+
+     314:                  Store(Local3, Index(CPON, Local0))
+
+00000800:  70 63 ..................    "pc"
+00000802:  88 43 50 4F 4E 60 00 ...    ".CPON`."
+
+     315:                  If (LEqual(Local3, 1)) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    314:                 If (LEqual(Local3, 1)) {
+Optimize 1039 -                                           ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+00000809:  A0 0A ..................    ".."
+0000080B:  93 63 01 ...............    ".c."
+
+     316:                      NTFY(Local0, 1)
+
+[****iasl****]
+acpi-dsdt.dsl.i    315:                     NTFY(Local0, 1)
+Optimize 1039 -                                         ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+0000080E:  4E 54 46 59 60 01 ......    "NTFY`."
+
+     317:                  } Else {
+     318:                      NTFY(Local0, 3)
+
+00000814:  A1 08 ..................    ".."
+00000816:  4E 54 46 59 60 0A 03 ...    "NTFY`.."
+
+     319:                  }
+     320:              }
+     321:              Increment(Local0)
+
+0000081D:  75 60 ..................    "u`"
+
+     322:          }
+     323:      }
+     324:  }
+     325:      External(MTFY, MethodObj)
+     326:      Scope(\_SB.PCI0) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    325:     Scope(\_SB.PCI0) {
+Optimize 1075 -       NamePath optimized ^  (_SB_.PCI0)
+
+
+
+0000081F:  10 4E 2D 2E 5F 53 42 5F     ".N-._SB_"
+00000827:  50 43 49 30 ............    "PCI0"
+
+     327:          Device(MHPD) {
+
+0000082B:  5B 82 41 2D 4D 48 50 44     "[.A-MHPD"
+
+     328:              Name(_HID, "PNP0A06")
+
+00000833:  08 5F 48 49 44 0D 50 4E     "._HID.PN"
+0000083B:  50 30 41 30 36 00 ......    "P0A06."
+
+     329:              Name(_UID, "Memory hotplug resources")
+
+00000841:  08 5F 55 49 44 0D 4D 65     "._UID.Me"
+00000849:  6D 6F 72 79 20 68 6F 74     "mory hot"
+00000851:  70 6C 75 67 20 72 65 73     "plug res"
+00000859:  6F 75 72 63 65 73 00 ...    "ources."
+
+     330:              External(MDNR, IntObj)
+     331:              External(MRBL, FieldUnitObj)
+     332:              External(MRBH, FieldUnitObj)
+     333:              External(MRLL, FieldUnitObj)
+     334:              External(MRLH, FieldUnitObj)
+     335:              External(MPX, FieldUnitObj)
+     336:              External(MES, FieldUnitObj)
+     337:              External(MINS, FieldUnitObj)
+     338:              External(MRMV, FieldUnitObj)
+     339:              External(MEJ, FieldUnitObj)
+     340:              External(MSEL, FieldUnitObj)
+     341:              External(MOEV, FieldUnitObj)
+     342:              External(MOSC, FieldUnitObj)
+     343:              Method(_STA, 0) {
+
+00000860:  14 13 5F 53 54 41 00 ...    ".._STA."
+
+     344:                  If (LEqual(MDNR, Zero)) {
+
+00000867:  A0 09 ..................    ".."
+00000869:  93 4D 44 4E 52 00 ......    ".MDNR."
+
+     345:                      Return(0x0)
+
+[****iasl****]
+acpi-dsdt.dsl.i    344:                     Return(0x0)
+Optimize 1039 -                                     ^ Integer optimized to single-byte AML opcode (Zero)
+
+
+
+0000086F:  A4 00 ..................    ".."
+
+     346:                  }
+     347:                  Return(0xB)
+
+00000871:  A4 0A 0B ...............    "..."
+
+     348:              }
+     349:              Mutex (MLCK, 0)
+
+00000874:  5B 01 4D 4C 43 4B 00 ...    "[.MLCK."
+
+     350:              Method(MSCN, 0) {
+
+0000087B:  14 41 06 4D 53 43 4E 00     ".A.MSCN."
+
+     351:                  If (LEqual(MDNR, Zero)) {
+
+00000883:  A0 09 ..................    ".."
+00000885:  93 4D 44 4E 52 00 ......    ".MDNR."
+
+     352:                       Return(Zero)
+
+0000088B:  A4 00 ..................    ".."
+
+     353:                  }
+     354:                  Store(Zero, Local0)
+
+0000088D:  70 00 60 ...............    "p.`"
+
+     355:                  Acquire(MLCK, 0xFFFF)
+
+00000890:  5B 23 4D 4C 43 4B FF FF     "[#MLCK.."
+
+     356:                  while (LLess(Local0, MDNR)) {
+
+00000898:  A2 3C ..................    ".<"
+0000089A:  95 60 4D 44 4E 52 ......    ".`MDNR"
+
+     357:                      Store(Local0, MSEL)
+
+000008A0:  70 60 4D 53 45 4C ......    "p`MSEL"
+
+     358:                      If (LEqual(MINS, One)) {
+
+000008A6:  A0 13 ..................    ".."
+000008A8:  93 4D 49 4E 53 01 ......    ".MINS."
+
+     359:                          MTFY(Local0, 1)
+
+[****iasl****]
+acpi-dsdt.dsl.i    358:                         MTFY(Local0, 1)
+Optimize 1039 - Integer optimized to single-byte AML opcode ^  (One)
+
+
+
+000008AE:  4D 54 46 59 60 01 ......    "MTFY`."
+
+     360:                          Store(1, MINS)
+
+[****iasl****]
+acpi-dsdt.dsl.i    359:                         Store(1, MINS)
+Optimize 1039 -                                      ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+000008B4:  70 01 4D 49 4E 53 ......    "p.MINS"
+
+     361:                      } Elseif (LEqual(MRMV, One)) {
+
+000008BA:  A1 16 ..................    ".."
+000008BC:  A0 14 ..................    ".."
+000008BE:  93 4D 52 4D 56 01 ......    ".MRMV."
+
+     362:                          MTFY(Local0, 3)
+
+000008C4:  4D 54 46 59 60 0A 03 ...    "MTFY`.."
+
+     363:                          Store(1, MRMV)
+
+[****iasl****]
+acpi-dsdt.dsl.i    362:                         Store(1, MRMV)
+Optimize 1039 -                                      ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+000008CB:  70 01 4D 52 4D 56 ......    "p.MRMV"
+
+     364:                      }
+     365:                      Add(Local0, One, Local0)
+
+000008D1:  72 60 01 60 ............    "r`.`"
+
+     366:                  }
+     367:                  Release(MLCK)
+
+000008D5:  5B 27 4D 4C 43 4B ......    "['MLCK"
+
+     368:                  Return(One)
+
+000008DB:  A4 01 ..................    ".."
+
+     369:              }
+     370:              Method(MRST, 1) {
+
+000008DD:  14 2D 4D 52 53 54 01 ...    ".-MRST."
+
+     371:                  Store(Zero, Local0)
+
+000008E4:  70 00 60 ...............    "p.`"
+
+     372:                  Acquire(MLCK, 0xFFFF)
+
+000008E7:  5B 23 4D 4C 43 4B FF FF     "[#MLCK.."
+
+     373:                  Store(ToInteger(Arg0), MSEL)
+
+000008EF:  70 .....................    "p"
+000008F0:  99 68 00 4D 53 45 4C ...    ".h.MSEL"
+
+     374:                  If (LEqual(MES, One)) {
+
+000008F7:  A0 0B ..................    ".."
+000008F9:  93 4D 45 53 5F 01 ......    ".MES_."
+
+     375:                      Store(0xF, Local0)
+
+000008FF:  70 0A 0F 60 ............    "p..`"
+
+     376:                  }
+     377:                  Release(MLCK)
+
+00000903:  5B 27 4D 4C 43 4B ......    "['MLCK"
+
+     378:                  Return(Local0)
+
+00000909:  A4 60 ..................    ".`"
+
+     379:              }
+     380:              Method(MCRS, 1, Serialized) {
+
+0000090B:  14 41 18 4D 43 52 53 09     ".A.MCRS."
+
+     381:                  Acquire(MLCK, 0xFFFF)
+
+00000913:  5B 23 4D 4C 43 4B FF FF     "[#MLCK.."
+
+     382:                  Store(ToInteger(Arg0), MSEL)
+
+0000091B:  70 .....................    "p"
+0000091C:  99 68 00 4D 53 45 4C ...    ".h.MSEL"
+
+     383:                  Name(MR64, ResourceTemplate() {
+
+00000923:  08 4D 52 36 34 11 33 0A     ".MR64.3."
+0000092B:  30 .....................    "0"
+
+     384:                      QWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+
+[****iasl****]
+acpi-dsdt.dsl.i    383:                     QWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                         Object is not referenced ^  (Name is within method [MCRS])
+
+
+[****iasl****]
+acpi-dsdt.dsl.i    383:                     QWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                                   Object is not referenced ^  (Name is within method [MCRS])
+
+
+[****iasl****]
+acpi-dsdt.dsl.i    383:                     QWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                                             Object is not referenced ^  (Name is within method [MCRS])
+
+
+     385:                      Cacheable, ReadWrite,
+
+[****iasl****]
+acpi-dsdt.dsl.i    384:                     Cacheable, ReadWrite,
+Remark   2089 -           Object is not referenced ^  (Name is within method [MCRS])
+
+
+[****iasl****]
+acpi-dsdt.dsl.i    384:                     Cacheable, ReadWrite,
+Remark   2089 -                      Object is not referenced ^  (Name is within method [MCRS])
+
+
+     386:                      0x0000000000000000,
+
+[****iasl****]
+acpi-dsdt.dsl.i    385:                     0x0000000000000000,
+Remark   2089 -                    Object is not referenced ^  (Name is within method [MCRS])
+
+
+     387:                      0x0000000000000000,
+
+[****iasl****]
+acpi-dsdt.dsl.i    386:                     0x0000000000000000,
+Remark   2089 -                    Object is not referenced ^  (Name is within method [MCRS])
+
+
+     388:                      0xFFFFFFFFFFFFFFFE,
+
+[****iasl****]
+acpi-dsdt.dsl.i    387:                     0xFFFFFFFFFFFFFFFE,
+Remark   2089 -                    Object is not referenced ^  (Name is within method [MCRS])
+
+
+     389:                      0x0000000000000000,
+
+[****iasl****]
+acpi-dsdt.dsl.i    388:                     0x0000000000000000,
+Remark   2089 -                    Object is not referenced ^  (Name is within method [MCRS])
+
+
+     390:                      0xFFFFFFFFFFFFFFFF,
+
+[****iasl****]
+acpi-dsdt.dsl.i    389:                     0xFFFFFFFFFFFFFFFF,
+Remark   2089 -                    Object is not referenced ^  (Name is within method [MCRS])
+
+
+     391:                      ,, MW64, AddressRangeMemory, TypeStatic)
+
+[****iasl****]
+acpi-dsdt.dsl.i    390:                     ,, MW64, AddressRangeMemory, TypeStatic)
+Remark   2089 -                             Object is not referenced ^  (Name is within method [MCRS])
+
+
+[****iasl****]
+acpi-dsdt.dsl.i    390:                     ,, MW64, AddressRangeMemory, TypeStatic)
+Remark   2089 -                                         Object is not referenced ^  (Name is within method [MCRS])
+
+
+
+0000092C:  8A 2B 00 00 0C 03 00 00     ".+......"
+00000934:  00 00 00 00 00 00 00 00     "........"
+0000093C:  00 00 00 00 00 00 FE FF     "........"
+00000944:  FF FF FF FF FF FF 00 00     "........"
+0000094C:  00 00 00 00 00 00 FF FF     "........"
+00000954:  FF FF FF FF FF FF ......    "......"
+0000095A:  79 00 ..................    "y."
+
+     392:                  })
+     393:                  CreateDWordField(MR64, 14, MINL)
+
+0000095C:  8A 4D 52 36 34 0A 0E 4D     ".MR64..M"
+00000964:  49 4E 4C ...............    "INL"
+
+     394:                  CreateDWordField(MR64, 18, MINH)
+
+00000967:  8A 4D 52 36 34 0A 12 4D     ".MR64..M"
+0000096F:  49 4E 48 ...............    "INH"
+
+     395:                  CreateDWordField(MR64, 38, LENL)
+
+00000972:  8A 4D 52 36 34 0A 26 4C     ".MR64.&L"
+0000097A:  45 4E 4C ...............    "ENL"
+
+     396:                  CreateDWordField(MR64, 42, LENH)
+
+0000097D:  8A 4D 52 36 34 0A 2A 4C     ".MR64.*L"
+00000985:  45 4E 48 ...............    "ENH"
+
+     397:                  CreateDWordField(MR64, 22, MAXL)
+
+00000988:  8A 4D 52 36 34 0A 16 4D     ".MR64..M"
+00000990:  41 58 4C ...............    "AXL"
+
+     398:                  CreateDWordField(MR64, 26, MAXH)
+
+00000993:  8A 4D 52 36 34 0A 1A 4D     ".MR64..M"
+0000099B:  41 58 48 ...............    "AXH"
+
+     399:                  Store(MRBH, MINH)
+
+0000099E:  70 4D 52 42 48 4D 49 4E     "pMRBHMIN"
+000009A6:  48 .....................    "H"
+
+     400:                  Store(MRBL, MINL)
+
+000009A7:  70 4D 52 42 4C 4D 49 4E     "pMRBLMIN"
+000009AF:  4C .....................    "L"
+
+     401:                  Store(MRLH, LENH)
+
+000009B0:  70 4D 52 4C 48 4C 45 4E     "pMRLHLEN"
+000009B8:  48 .....................    "H"
+
+     402:                  Store(MRLL, LENL)
+
+000009B9:  70 4D 52 4C 4C 4C 45 4E     "pMRLLLEN"
+000009C1:  4C .....................    "L"
+
+     403:                  Add(MINL, LENL, MAXL)
+
+000009C2:  72 4D 49 4E 4C 4C 45 4E     "rMINLLEN"
+000009CA:  4C 4D 41 58 4C .........    "LMAXL"
+
+     404:                  Add(MINH, LENH, MAXH)
+
+000009CF:  72 4D 49 4E 48 4C 45 4E     "rMINHLEN"
+000009D7:  48 4D 41 58 48 .........    "HMAXH"
+
+     405:                  If (LLess(MAXL, MINL)) {
+
+000009DC:  A0 14 ..................    ".."
+000009DE:  95 4D 41 58 4C 4D 49 4E     ".MAXLMIN"
+000009E6:  4C .....................    "L"
+
+     406:                      Add(MAXH, One, MAXH)
+
+000009E7:  72 4D 41 58 48 01 4D 41     "rMAXH.MA"
+000009EF:  58 48 ..................    "XH"
+
+     407:                  }
+     408:                  If (LLess(MAXL, One)) {
+
+000009F1:  A0 11 ..................    ".."
+000009F3:  95 4D 41 58 4C 01 ......    ".MAXL."
+
+     409:                      Subtract(MAXH, One, MAXH)
+
+000009F9:  74 4D 41 58 48 01 4D 41     "tMAXH.MA"
+00000A01:  58 48 ..................    "XH"
+
+     410:                  }
+     411:                  Subtract(MAXL, One, MAXL)
+
+00000A03:  74 4D 41 58 4C 01 4D 41     "tMAXL.MA"
+00000A0B:  58 4C ..................    "XL"
+
+     412:                  If (LEqual(MAXH, Zero)){
+
+00000A0D:  A0 44 07 ...............    ".D."
+00000A10:  93 4D 41 58 48 00 ......    ".MAXH."
+
+     413:                      Name(MR32, ResourceTemplate() {
+
+00000A16:  08 4D 52 33 32 11 1F 0A     ".MR32..."
+00000A1E:  1C .....................    "."
+
+     414:                          DWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+
+[****iasl****]
+acpi-dsdt.dsl.i    413:                         DWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                             Object is not referenced ^  (Name is within method [MCRS])
+
+
+[****iasl****]
+acpi-dsdt.dsl.i    413:                         DWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                                       Object is not referenced ^  (Name is within method [MCRS])
+
+
+[****iasl****]
+acpi-dsdt.dsl.i    413:                         DWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                                                 Object is not referenced ^  (Name is within method [MCRS])
+
+
+     415:                          Cacheable, ReadWrite,
+
+[****iasl****]
+acpi-dsdt.dsl.i    414:                         Cacheable, ReadWrite,
+Remark   2089 -               Object is not referenced ^  (Name is within method [MCRS])
+
+
+[****iasl****]
+acpi-dsdt.dsl.i    414:                         Cacheable, ReadWrite,
+Remark   2089 -                          Object is not referenced ^  (Name is within method [MCRS])
+
+
+     416:                          0x00000000,
+
+[****iasl****]
+acpi-dsdt.dsl.i    415:                         0x00000000,
+Remark   2089 -                Object is not referenced ^  (Name is within method [MCRS])
+
+
+     417:                          0x00000000,
+     418:                          0xFFFFFFFE,
+     419:                          0x00000000,
+
+[****iasl****]
+acpi-dsdt.dsl.i    418:                         0x00000000,
+Remark   2089 -                Object is not referenced ^  (Name is within method [MCRS])
+
+
+     420:                          0xFFFFFFFF,
+     421:                          ,, MW32, AddressRangeMemory, TypeStatic)
+
+[****iasl****]
+acpi-dsdt.dsl.i    420:                         ,, MW32, AddressRangeMemory, TypeStatic)
+Remark   2089 -                                 Object is not referenced ^  (Name is within method [MCRS])
+
+
+[****iasl****]
+acpi-dsdt.dsl.i    420:                         ,, MW32, AddressRangeMemory, TypeStatic)
+Remark   2089 -                                             Object is not referenced ^  (Name is within method [MCRS])
+
+
+
+00000A1F:  87 17 00 00 0C 03 00 00     "........"
+00000A27:  00 00 00 00 00 00 FE FF     "........"
+00000A2F:  FF FF 00 00 00 00 FF FF     "........"
+00000A37:  FF FF ..................    ".."
+00000A39:  79 00 ..................    "y."
+
+     422:                      })
+     423:                      CreateDWordField(MR32, MW32._MIN, MIN)
+
+00000A3B:  8A 4D 52 33 32 0A 0A 4D     ".MR32..M"
+00000A43:  49 4E 5F ...............    "IN_"
+
+     424:                      CreateDWordField(MR32, MW32._MAX, MAX)
+
+00000A46:  8A 4D 52 33 32 0A 0E 4D     ".MR32..M"
+00000A4E:  41 58 5F ...............    "AX_"
+
+     425:                      CreateDWordField(MR32, MW32._LEN, LEN)
+
+00000A51:  8A 4D 52 33 32 0A 16 4C     ".MR32..L"
+00000A59:  45 4E 5F ...............    "EN_"
+
+     426:                      Store(MINL, MIN)
+
+00000A5C:  70 4D 49 4E 4C 4D 49 4E     "pMINLMIN"
+00000A64:  5F .....................    "_"
+
+     427:                      Store(MAXL, MAX)
+
+00000A65:  70 4D 41 58 4C 4D 41 58     "pMAXLMAX"
+00000A6D:  5F .....................    "_"
+
+     428:                      Store(LENL, LEN)
+
+00000A6E:  70 4C 45 4E 4C 4C 45 4E     "pLENLLEN"
+00000A76:  5F .....................    "_"
+
+     429:                      Release(MLCK)
+
+00000A77:  5B 27 4D 4C 43 4B ......    "['MLCK"
+
+     430:                      Return(MR32)
+
+00000A7D:  A4 4D 52 33 32 .........    ".MR32"
+
+     431:                  }
+     432:                  Release(MLCK)
+
+00000A82:  5B 27 4D 4C 43 4B ......    "['MLCK"
+
+     433:                  Return(MR64)
+
+00000A88:  A4 4D 52 36 34 .........    ".MR64"
+
+     434:              }
+     435:              Method(MPXM, 1) {
+
+00000A8D:  14 24 4D 50 58 4D 01 ...    ".$MPXM."
+
+     436:                  Acquire(MLCK, 0xFFFF)
+
+00000A94:  5B 23 4D 4C 43 4B FF FF     "[#MLCK.."
+
+     437:                  Store(ToInteger(Arg0), MSEL)
+
+00000A9C:  70 .....................    "p"
+00000A9D:  99 68 00 4D 53 45 4C ...    ".h.MSEL"
+
+     438:                  Store(MPX, Local0)
+
+00000AA4:  70 4D 50 58 5F 60 ......    "pMPX_`"
+
+     439:                  Release(MLCK)
+
+00000AAA:  5B 27 4D 4C 43 4B ......    "['MLCK"
+
+     440:                  Return(Local0)
+
+00000AB0:  A4 60 ..................    ".`"
+
+     441:              }
+     442:              Method(MOST, 4) {
+
+00000AB2:  14 28 4D 4F 53 54 04 ...    ".(MOST."
+
+     443:                  Acquire(MLCK, 0xFFFF)
+
+00000AB9:  5B 23 4D 4C 43 4B FF FF     "[#MLCK.."
+
+     444:                  Store(ToInteger(Arg0), MSEL)
+
+00000AC1:  70 .....................    "p"
+00000AC2:  99 68 00 4D 53 45 4C ...    ".h.MSEL"
+
+     445:                  Store(Arg1, MOEV)
+
+00000AC9:  70 69 4D 4F 45 56 ......    "piMOEV"
+
+     446:                  Store(Arg2, MOSC)
+
+00000ACF:  70 6A 4D 4F 53 43 ......    "pjMOSC"
+
+     447:                  Release(MLCK)
+
+00000AD5:  5B 27 4D 4C 43 4B ......    "['MLCK"
+
+     448:              }
+     449:              Method(MEJ0, 2) {
+
+00000ADB:  14 22 4D 45 4A 30 02 ...    "."MEJ0."
+
+     450:                  Acquire(MLCK, 0xFFFF)
+
+00000AE2:  5B 23 4D 4C 43 4B FF FF     "[#MLCK.."
+
+     451:                  Store(ToInteger(Arg0), MSEL)
+
+00000AEA:  70 .....................    "p"
+00000AEB:  99 68 00 4D 53 45 4C ...    ".h.MSEL"
+
+     452:                  Store(1, MEJ)
+
+[****iasl****]
+acpi-dsdt.dsl.i    451:                 Store(1, MEJ)
+Optimize 1039 -                              ^ Integer optimized to single-byte AML opcode (One)
+
+
+
+00000AF2:  70 01 4D 45 4A 5F ......    "p.MEJ_"
+
+     453:                  Release(MLCK)
+
+00000AF8:  5B 27 4D 4C 43 4B ......    "['MLCK"
+
+     454:              }
+     455:          }
+     456:      }
+     457:      Scope(\_GPE) {
+
+[****iasl****]
+acpi-dsdt.dsl.i    456:     Scope(\_GPE) {
+Optimize 1075 -   NamePath optimized ^  (_GPE)
+
+
+
+00000AFE:  10 45 0D 5F 47 50 45 ...    ".E._GPE"
+
+     458:          Name(_HID, "ACPI0006")
+
+00000B05:  08 5F 48 49 44 0D 41 43     "._HID.AC"
+00000B0D:  50 49 30 30 30 36 00 ...    "PI0006."
+
+     459:          Method(_L00) {
+
+00000B14:  14 06 5F 4C 30 30 00 ...    ".._L00."
+
+     460:          }
+     461:          Method(_E01) {
+
+00000B1B:  14 39 5F 45 30 31 00 ...    ".9_E01."
+
+     462:              Acquire(\_SB.PCI0.BLCK, 0xFFFF)
+
+00000B22:  5B 23 5C 2F 03 5F 53 42     "[#\/._SB"
+00000B2A:  5F 50 43 49 30 42 4C 43     "_PCI0BLC"
+00000B32:  4B FF FF ...............    "K.."
+
+     463:              \_SB.PCI0.PCNT()
+
+00000B35:  5C 2F 03 5F 53 42 5F 50     "\/._SB_P"
+00000B3D:  43 49 30 50 43 4E 54 ...    "CI0PCNT"
+
+     464:              Release(\_SB.PCI0.BLCK)
+
+00000B44:  5B 27 5C 2F 03 5F 53 42     "['\/._SB"
+00000B4C:  5F 50 43 49 30 42 4C 43     "_PCI0BLC"
+00000B54:  4B .....................    "K"
+
+     465:          }
+     466:          Method(_E02) {
+
+00000B55:  14 10 5F 45 30 32 00 ...    ".._E02."
+
+     467:              \_SB.PRSC()
+
+00000B5C:  5C 2E 5F 53 42 5F 50 52     "\._SB_PR"
+00000B64:  53 43 ..................    "SC"
+
+     468:          }
+     469:          Method(_E03) {
+
+00000B66:  14 19 5F 45 30 33 00 ...    ".._E03."
+
+     470:              \_SB.PCI0.MHPD.MSCN()
+
+00000B6D:  5C 2F 04 5F 53 42 5F 50     "\/._SB_P"
+00000B75:  43 49 30 4D 48 50 44 4D     "CI0MHPDM"
+00000B7D:  53 43 4E ...............    "SCN"
+
+     471:          }
+     472:          Method(_L04) {
+
+00000B80:  14 06 5F 4C 30 34 00 ...    ".._L04."
+
+     473:          }
+     474:          Method(_L05) {
+
+00000B87:  14 06 5F 4C 30 35 00 ...    ".._L05."
+
+     475:          }
+     476:          Method(_L06) {
+
+00000B8E:  14 06 5F 4C 30 36 00 ...    ".._L06."
+
+     477:          }
+     478:          Method(_L07) {
+
+00000B95:  14 06 5F 4C 30 37 00 ...    ".._L07."
+
+     479:          }
+     480:          Method(_L08) {
+
+00000B9C:  14 06 5F 4C 30 38 00 ...    ".._L08."
+
+     481:          }
+     482:          Method(_L09) {
+
+00000BA3:  14 06 5F 4C 30 39 00 ...    ".._L09."
+
+     483:          }
+     484:          Method(_L0A) {
+
+00000BAA:  14 06 5F 4C 30 41 00 ...    ".._L0A."
+
+     485:          }
+     486:          Method(_L0B) {
+
+00000BB1:  14 06 5F 4C 30 42 00 ...    ".._L0B."
+
+     487:          }
+     488:          Method(_L0C) {
+
+00000BB8:  14 06 5F 4C 30 43 00 ...    ".._L0C."
+
+     489:          }
+     490:          Method(_L0D) {
+
+00000BBF:  14 06 5F 4C 30 44 00 ...    ".._L0D."
+
+     491:          }
+     492:          Method(_L0E) {
+
+00000BC6:  14 06 5F 4C 30 45 00 ...    ".._L0E."
+
+     493:          }
+     494:          Method(_L0F) {
+
+00000BCD:  14 06 5F 4C 30 46 00 ...    ".._L0F."
+     495:          }
+     496:      }
+     497:  }
+
+
+
+Summary of errors and warnings
+
+acpi-dsdt.dsl.i    383:                     QWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                         Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    383:                     QWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                                   Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    383:                     QWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                                             Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    384:                     Cacheable, ReadWrite,
+Remark   2089 -           Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    384:                     Cacheable, ReadWrite,
+Remark   2089 -                      Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    385:                     0x0000000000000000,
+Remark   2089 -                    Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    386:                     0x0000000000000000,
+Remark   2089 -                    Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    387:                     0xFFFFFFFFFFFFFFFE,
+Remark   2089 -                    Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    388:                     0x0000000000000000,
+Remark   2089 -                    Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    389:                     0xFFFFFFFFFFFFFFFF,
+Remark   2089 -                    Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    390:                     ,, MW64, AddressRangeMemory, TypeStatic)
+Remark   2089 -                             Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    390:                     ,, MW64, AddressRangeMemory, TypeStatic)
+Remark   2089 -                                         Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    413:                         DWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                             Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    413:                         DWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                                       Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    413:                         DWordMemory(ResourceProducer, PosDecode, MinFixed, MaxFixed,
+Remark   2089 -                                                                 Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    414:                         Cacheable, ReadWrite,
+Remark   2089 -               Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    414:                         Cacheable, ReadWrite,
+Remark   2089 -                          Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    415:                         0x00000000,
+Remark   2089 -                Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    418:                         0x00000000,
+Remark   2089 -                Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    420:                         ,, MW32, AddressRangeMemory, TypeStatic)
+Remark   2089 -                                 Object is not referenced ^  (Name is within method [MCRS])
+
+acpi-dsdt.dsl.i    420:                         ,, MW32, AddressRangeMemory, TypeStatic)
+Remark   2089 -                                             Object is not referenced ^  (Name is within method [MCRS])
+
+
+ASL Optimizing Compiler version 20140214-64 [Mar 29 2014]
+
+ASL Input:     acpi-dsdt.dsl.i - 498 lines, 16724 bytes, 404 keywords
+AML Output:    acpi-dsdt.aml - 3028 bytes, 164 named objects, 240 executable opcodes
+Listing File:  acpi-dsdt.lst - 69847 bytes
+Hex Dump:      acpi-dsdt.hex - 223 bytes
+
+Compilation complete. 0 Errors, 0 Warnings, 21 Remarks, 49 Optimizations
+

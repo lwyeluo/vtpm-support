@@ -1,0 +1,6 @@
+tpm12/libtpms_tpm12_la-tpm_svnrevision.lo: tpm12/tpm_svnrevision.c \
+ /usr/include/stdc-predef.h tpm_library_conf.h
+
+/usr/include/stdc-predef.h:
+
+tpm_library_conf.h:
